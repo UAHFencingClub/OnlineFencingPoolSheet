@@ -1,3 +1,5 @@
+use std::fmt::format;
+
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
@@ -6,6 +8,8 @@ use leptos_router::*;
 mod components;
 mod pages;
 
+// use console_log::info;
+
 // Top-Level pages
 use crate::pages::home::Home;
 use crate::pages::not_found::NotFound;
@@ -13,119 +17,114 @@ use crate::pages::not_found::NotFound;
 /// An app router which renders the homepage and handles 404's
 #[component]
 pub fn App() -> impl IntoView {
-    let (count, set_count) = create_signal(0);
-
     view! {
-        <button
-            on:click=move |_| {
-                set_count.update(|n| *n += 1);
-            }
-            // the class: syntax reactively updates a single class
-            // here, we'll set the `red` class when `count` is odd
-            class:red=move || count() % 2 == 1
-        >
-            "Click me"
-        </button>
+        <FencerList />
     }
 }
 
 /// A list of counters that allows you to add or
 /// remove counters.
 #[component]
-fn DynamicList(
-    /// The number of counters to begin with.
-    initial_length: usize,
-) -> impl IntoView {
-    // This dynamic list will use the <For/> component.
-    // <For/> is a keyed list. This means that each row
-    // has a defined key. If the key does not change, the row
-    // will not be re-rendered. When the list changes, only
-    // the minimum number of changes will be made to the DOM.
-
-    // `next_counter_id` will let us generate unique IDs
-    // we do this by simply incrementing the ID by one
-    // each time we create a counter
-    let mut next_counter_id = initial_length;
-
-    // we generate an initial list as in <StaticList/>
-    // but this time we include the ID along with the signal
-    let initial_counters = (0..initial_length)
-        .map(|id| (id, create_signal(id + 1)))
-        .collect::<Vec<_>>();
+fn FencerList() -> impl IntoView {
+    let initial_fencers = Vec::new();
 
     // now we store that initial list in a signal
     // this way, we'll be able to modify the list over time,
     // adding and removing counters, and it will change reactively
-    let (counters, set_counters) = create_signal(initial_counters);
+    let (fencers, set_fencers) = create_signal(initial_fencers);
 
-    let add_counter = move |_| {
-        // create a signal for the new counter
-        let sig = create_signal(next_counter_id + 1);
-        // add this counter to the list of counters
-        set_counters.update(move |counters| {
+    let (deug_vec, set_debug_vec) = create_signal("debug_sig".to_string());
+
+    let mut fencer_id = 0;
+    let add_fencer = move |_| {
+        let fencer_sig = create_signal(fencer_id + 1);
+        let fencer_ref: NodeRef<html::Input> = create_node_ref();
+        set_fencers.update(move |fencers| {
             // since `.update()` gives us `&mut T`
             // we can just use normal Vec methods like `push`
-            counters.push((next_counter_id, sig))
+            fencers.push((fencer_id, fencer_sig, fencer_ref))
         });
         // increment the ID so it's always unique
-        next_counter_id += 1;
+        fencer_id += 1;
+    };
+
+    let on_submit = move |ev: leptos::ev::SubmitEvent| {
+        // stop the page from reloading!
+        ev.prevent_default();
+
+        let values: Vec<String> = fencers.get().into_iter().map(|(_, _, node_refs)| node_refs().expect("the error").value()).collect();
+    
+        // // here, we'll extract the value from the input
+        // let value = input_element()
+        //     // event handlers can only fire after the view
+        //     // is mounted to the DOM, so the `NodeRef` will be `Some`
+        //     .expect("<input> should be mounted")
+        //     // `leptos::HtmlElement<html::Input>` implements `Deref`
+        //     // to a `web_sys::HtmlInputElement`.
+        //     // this means we can call`HtmlInputElement::value()`
+        //     // to get the current value of the input
+        //     .value();
+        // set_name(value);
+        set_debug_vec(format!("{values:?}"))
+
     };
 
     view! {
         <div>
-            <button on:click=add_counter>
+            <button on:click=add_fencer>
                 "Add Counter"
             </button>
-            <ul>
-                // The <For/> component is central here
-                // This allows for efficient, key list rendering
-                <For
-                    // `each` takes any function that returns an iterator
-                    // this should usually be a signal or derived signal
-                    // if it's not reactive, just render a Vec<_> instead of <For/>
-                    each=counters
-                    // the key should be unique and stable for each row
-                    // using an index is usually a bad idea, unless your list
-                    // can only grow, because moving items around inside the list
-                    // means their indices will change and they will all rerender
-                    key=|counter| counter.0
-                    // `children` receives each item from your `each` iterator
-                    // and returns a view
-                    children=move |(id, (count, set_count))| {
-                        view! {
-                            <li>
-                                <button
-                                    on:click=move |_| set_count.update(|n| *n += 1)
-                                >
-                                    {count}
-                                </button>
-                                <button
-                                    on:click=move |_| {
-                                        set_counters.update(|counters| {
-                                            counters.retain(|(counter_id, (signal, _))| {
-                                                // NOTE: in this example, we are creating the signals
-                                                // in the scope of the parent. This means the memory used to
-                                                // store them will not be reclaimed until the parent component
-                                                // is unmounted. Here, we're removing the signal early (i.e, before
-                                                // the DynamicList is unmounted), so we manually dispose of the signal
-                                                // to avoid leaking memory.
-                                                //
-                                                // This is only necessary in an example with nested signals like this one.
-                                                if counter_id == &id {
-                                                    signal.dispose();
-                                                }
-                                                counter_id != &id
-                                            })
-                                        });
-                                    }
-                                >
-                                    "Remove"
-                                </button>
-                            </li>
+            <form on:submit=on_submit>
+                <ul>
+                    <For
+                        // `each` takes any function that returns an iterator
+                        // this should usually be a signal or derived signal
+                        each=fencers
+                        key=|counter| counter.0
+                        // `children` receives each item from your `each` iterator
+                        // and returns a view
+                        children=move |(id, (fencer, set_fencer), fencer_ref)| {
+                            view! {
+                                <li>
+                                    // <button
+                                    //     on:click=move |_| set_fencer.update(|n| *n += 1)
+                                    // >
+                                    //     {fencer}
+                                    // </button>
+                                    <input type="text"
+                                        value=fencer
+                                        node_ref=fencer_ref
+                                    />
+                                    <button
+                                        on:click=move |_| {
+                                            set_fencers.update(|counters| {
+                                                counters.retain(|(counter_id, (signal, _), _)| {
+                                                    // NOTE: in this example, we are creating the signals
+                                                    // in the scope of the parent. This means the memory used to
+                                                    // store them will not be reclaimed until the parent component
+                                                    // is unmounted. Here, we're removing the signal early (i.e, before
+                                                    // the DynamicList is unmounted), so we manually dispose of the signal
+                                                    // to avoid leaking memory.
+                                                    //
+                                                    // This is only necessary in an example with nested signals like this one.
+                                                    if counter_id == &id {
+                                                        signal.dispose();
+                                                    }
+                                                    counter_id != &id
+                                                })
+                                            });
+                                        }
+                                    >
+                                        "Remove"
+                                    </button>
+                                </li>
+                            }
                         }
-                    }
-                />
-            </ul>
+                    />
+                </ul>
+                <input type="submit" value="Submit"/>
+            </form>
+            <p> {deug_vec} </p>
         </div>
     }
 }

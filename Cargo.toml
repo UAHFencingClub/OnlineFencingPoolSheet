@@ -10,9 +10,10 @@ authors = ["Erik Fong <quantumerikfong@gmail.com>"]
 leptos = { version = "0.6", features = ["csr", "nightly"] }
 leptos_meta = { version = "0.6", features = ["csr", "nightly"] }
 leptos_router = { version = "0.6", features = ["csr", "nightly"] }
-console_log = "1"
+console_log = "=0.1.2"
 log = "0.4"
 console_error_panic_hook = "0.1"
+web-sys = "0.3.69"
 
 # utils
 # strum = { version = "0.25", features = ["derive", "strum_macros"] }
