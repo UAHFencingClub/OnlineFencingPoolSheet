@@ -3,6 +3,8 @@ use std::fmt::format;
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
+mod pool_sheet_utils;
+use pool_sheet_utils::PoolSheet;
 
 // Modules
 mod components;
@@ -20,7 +22,8 @@ pub fn App() -> impl IntoView {
     let (competiors, set_competitors) = create_signal(Vec::<String>::new());
     view! {
         <FencerList submit_fencers=set_competitors/>
-        <h1>{move || {format!("{:?}",competiors.get())}}</h1>
+        <PoolSheet fencers=competiors />
+        // <h1>{move || {format!("{:?}",competiors.get())}}</h1>
     }
 }
 
@@ -132,4 +135,16 @@ fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
     }
 }
 
-// want to use uncontrolled input
+#[component]
+fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
+
+    view! {
+        <ul>
+        {move || {
+            fencers.get().into_iter()
+            .map(|n| view! { <li>{n}</li>})
+            .collect::<Vec<_>>()
+        }}
+        </ul>
+    }
+}
