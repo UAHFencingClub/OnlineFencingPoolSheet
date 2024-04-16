@@ -17,15 +17,17 @@ use crate::pages::not_found::NotFound;
 /// An app router which renders the homepage and handles 404's
 #[component]
 pub fn App() -> impl IntoView {
+    let (competiors, set_competitors) = create_signal(Vec::<String>::new());
     view! {
-        <FencerList />
+        <FencerList submit_fencers=set_competitors/>
+        <h1>{move || {format!("{:?}",competiors.get())}}</h1>
     }
 }
 
 /// A list of counters that allows you to add or
 /// remove counters.
 #[component]
-fn FencerList() -> impl IntoView {
+fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
     let initial_fencers = Vec::new();
 
     // now we store that initial list in a signal
@@ -33,7 +35,7 @@ fn FencerList() -> impl IntoView {
     // adding and removing counters, and it will change reactively
     let (fencers, set_fencers) = create_signal(initial_fencers);
 
-    let (deug_vec, set_debug_vec) = create_signal("debug_sig".to_string());
+    // let (deug_vec, set_debug_vec) = create_signal("debug_sig".to_string());
 
     let mut fencer_id = 0;
     let add_fencer = move |_| {
@@ -65,7 +67,8 @@ fn FencerList() -> impl IntoView {
         //     // to get the current value of the input
         //     .value();
         // set_name(value);
-        set_debug_vec(format!("{values:?}"))
+        // set_debug_vec(format!("{values:?}"))
+        submit_fencers.update(|val| *val=values);
 
     };
 
@@ -124,7 +127,7 @@ fn FencerList() -> impl IntoView {
                 </ul>
                 <input type="submit" value="Submit"/>
             </form>
-            <p> {deug_vec} </p>
+            // <p> {deug_vec} </p>
         </div>
     }
 }
