@@ -16,6 +16,7 @@ console_error_panic_hook = "0.1"
 web-sys = "0.3.69"
 serde = "1.0.197"
 serde_json = "1.0.115"
+fencing-sport-lib = { path = "../../fencing-sport-lib" }
 
 # utils
 # strum = { version = "0.25", features = ["derive", "strum_macros"] }

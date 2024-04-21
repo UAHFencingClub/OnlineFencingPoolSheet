@@ -3,8 +3,7 @@ use std::fmt::format;
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
-mod pool_sheet_utils;
-use pool_sheet_utils::PoolSheet;
+use fencing_sport_lib::pools::PoolSheet;
 
 // Modules
 mod components;
