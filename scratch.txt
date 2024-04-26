@@ -1,0 +1,4 @@
+{
+    poolsheet.get_fencers().into_iter().map(|fencer_second| view! {
+        <td class="pool-sheet-score-box" />
+    })

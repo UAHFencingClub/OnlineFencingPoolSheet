@@ -3,7 +3,9 @@ use std::fmt::format;
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
-use fencing_sport_lib::pools::PoolSheet;
+use fencing_sport_lib::{fencer::{Fencer, SimpleFencer}, pools::{PoolSheet, SimpleBoutsCreator}};
+use log::info;
+use serde_json;
 
 // Modules
 mod components;
@@ -136,14 +138,38 @@ fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
 
 #[component]
 fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
-
     view! {
-        <ul>
         {move || {
-            fencers.get().into_iter()
-            .map(|n| view! { <li>{n}</li>})
-            .collect::<Vec<_>>()
+            let mut poolsheet = PoolSheet::default();
+            let fencers: Vec<SimpleFencer> = fencers.get().into_iter().map(|fencer_str| {SimpleFencer::new(fencer_str)}).collect();
+            poolsheet.add_fencers(fencers.into_iter());
+            match poolsheet.create_bouts(&SimpleBoutsCreator) {
+                Ok(()) => {
+                    view! {<div><table>
+                        <tr><td />{
+                            poolsheet.get_fencers().iter().map(|fencer| view! {
+                                <td class="pool-sheet-fencer-second">{
+                                    fencer.get_fullname()
+                                }</td>}).collect::<Vec<_>>()
+                        }</tr>
+
+                        {
+                            poolsheet.get_fencers().iter().map(|fencer_main| view! {
+                                <tr>
+                                    <td class="pool-sheet-fencer">{fencer_main.get_fullname()}</td>
+                                    {poolsheet.get_fencers().iter().map(|fencer_second| view! {
+                                        <td class="pool-sheet-score-box"
+                                            style={if fencer_second == fencer_main {"background-color: black"} else {""}}
+                                            id={format!("{}-{}",fencer_main.get_fullname(),fencer_second.get_fullname())}
+                                        />
+                                    }).collect::<Vec<_>>()}
+                                </tr>
+                            }).collect::<Vec<_>>()
+                        }
+                    </table></div>}
+                }
+                Err(err) => {view! {<div><p>{format!("{err:?}")}</p></div>}}
+            }
         }}
-        </ul>
     }
 }

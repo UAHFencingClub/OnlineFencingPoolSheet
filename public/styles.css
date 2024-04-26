@@ -53,3 +53,16 @@ button {
   text-align: center;
   margin: 2rem;
 } */
+
+table, th, td {
+  border: 1px solid black;
+}
+
+.pool-sheet-score-box {
+  height: same-as-width
+}
+
+.pool-sheet-fencer-second {
+  writing-mode: vertical-rl;
+  width: 1.2em
+}
