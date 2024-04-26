@@ -62,6 +62,10 @@ table, th, td {
   height: same-as-width
 }
 
+.pool-sheet-score-box-null {
+  background-color: black;
+}
+
 .pool-sheet-fencer-second {
   writing-mode: vertical-rl;
   width: 1.2em

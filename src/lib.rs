@@ -145,28 +145,55 @@ fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
             poolsheet.add_fencers(fencers.into_iter());
             match poolsheet.create_bouts(&SimpleBoutsCreator) {
                 Ok(()) => {
-                    view! {<div><table>
-                        <tr><td />{
-                            poolsheet.get_fencers().iter().map(|fencer| view! {
-                                <td class="pool-sheet-fencer-second">{
-                                    fencer.get_fullname()
-                                }</td>}).collect::<Vec<_>>()
-                        }</tr>
+                    view! {
+                        <div>
+                            <div class="poolsheet">
+                                <table>
+                                    <tr>
+                                        <td />
+                                        {
+                                            poolsheet.get_fencers().iter().map(|fencer| view! {
+                                                <td class="pool-sheet-fencer-second">
+                                                    {fencer.get_fullname()}
+                                                </td>
+                                            }).collect::<Vec<_>>()
+                                        }
+                                    </tr>
 
-                        {
-                            poolsheet.get_fencers().iter().map(|fencer_main| view! {
-                                <tr>
-                                    <td class="pool-sheet-fencer">{fencer_main.get_fullname()}</td>
-                                    {poolsheet.get_fencers().iter().map(|fencer_second| view! {
-                                        <td class="pool-sheet-score-box"
-                                            style={if fencer_second == fencer_main {"background-color: black"} else {""}}
-                                            id={format!("{}-{}",fencer_main.get_fullname(),fencer_second.get_fullname())}
-                                        />
-                                    }).collect::<Vec<_>>()}
-                                </tr>
-                            }).collect::<Vec<_>>()
-                        }
-                    </table></div>}
+                                    {
+                                        poolsheet.get_fencers().iter().map(|fencer_main| view! {
+                                            <tr>
+                                                <td class="pool-sheet-fencer">{fencer_main.get_fullname()}</td>
+                                                {poolsheet.get_fencers().iter().map(|fencer_second| view! {
+                                                    <td class={if fencer_second == fencer_main {"pool-sheet-score-box-null"} else {"pool-sheet-score-box"}}
+                                                        id={format!("{}-{}",fencer_main.get_fullname(),fencer_second.get_fullname())}
+                                                    />
+                                                }).collect::<Vec<_>>()}
+                                            </tr>
+                                        }).collect::<Vec<_>>()
+                                    }
+                                </table>
+                            </div>
+
+                            <ol class="bout-list">
+                                {
+                                    poolsheet.bouts.borrow().iter().map(|(versus, _)| {
+                                        view! {
+                                            <li>
+                                                {format!("{} vs {}", versus.0.get_fullname(), versus.1.get_fullname())}
+                                                <input 
+                                                    type="number"
+                                                    on:input={move |ev|{
+
+                                                    }}
+                                                /><input type="number"/>
+                                            </li>
+                                        }
+                                    }).collect::<Vec<_>>()
+                                }
+                            </ol>
+                        </div>
+                    }
                 }
                 Err(err) => {view! {<div><p>{format!("{err:?}")}</p></div>}}
             }
