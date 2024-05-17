@@ -1,9 +1,12 @@
 use std::fmt::format;
 
+use fencing_sport_lib::{
+    fencer::{Fencer, SimpleFencer},
+    pools::{PoolSheet, SimpleBoutsCreator},
+};
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
-use fencing_sport_lib::{fencer::{Fencer, SimpleFencer}, pools::{PoolSheet, SimpleBoutsCreator}};
 use log::info;
 use serde_json;
 
@@ -58,8 +61,12 @@ fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
         // stop the page from reloading!
         ev.prevent_default();
 
-        let values: Vec<String> = fencers.get().into_iter().map(|(_, _, node_refs)| node_refs().expect("the error").value()).collect();
-    
+        let values: Vec<String> = fencers
+            .get()
+            .into_iter()
+            .map(|(_, _, node_refs)| node_refs().expect("the error").value())
+            .collect();
+
         // // here, we'll extract the value from the input
         // let value = input_element()
         //     // event handlers can only fire after the view
@@ -72,8 +79,7 @@ fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
         //     .value();
         // set_name(value);
         // set_debug_vec(format!("{values:?}"))
-        submit_fencers.update(|val| *val=values);
-
+        submit_fencers.update(|val| *val = values);
     };
 
     view! {
@@ -140,11 +146,9 @@ fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
 fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
     view! {
         {move || {
-            let mut poolsheet = PoolSheet::default();
             let fencers: Vec<SimpleFencer> = fencers.get().into_iter().map(|fencer_str| {SimpleFencer::new(fencer_str)}).collect();
-            poolsheet.add_fencers(fencers.into_iter());
-            match poolsheet.create_bouts(&SimpleBoutsCreator) {
-                Ok(()) => {
+            match PoolSheet::new(&fencers, &SimpleBoutsCreator) {
+                Ok(poolsheet) => {
                     view! {
                         <div>
                             <div class="poolsheet">
@@ -152,7 +156,7 @@ fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                                     <tr>
                                         <td />
                                         {
-                                            poolsheet.get_fencers().iter().map(|fencer| view! {
+                                            fencers.iter().map(|fencer| view! {
                                                 <td class="pool-sheet-fencer-second">
                                                     {fencer.get_fullname()}
                                                 </td>
@@ -161,10 +165,10 @@ fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                                     </tr>
 
                                     {
-                                        poolsheet.get_fencers().iter().map(|fencer_main| view! {
+                                        fencers.iter().map(|fencer_main| view! {
                                             <tr>
                                                 <td class="pool-sheet-fencer">{fencer_main.get_fullname()}</td>
-                                                {poolsheet.get_fencers().iter().map(|fencer_second| view! {
+                                                {fencers.iter().map(|fencer_second| view! {
                                                     <td class={if fencer_second == fencer_main {"pool-sheet-score-box-null"} else {"pool-sheet-score-box"}}
                                                         id={format!("{}-{}",fencer_main.get_fullname(),fencer_second.get_fullname())}
                                                     />
@@ -177,11 +181,11 @@ fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
 
                             <ol class="bout-list">
                                 {
-                                    poolsheet.bouts.borrow().iter().map(|(versus, _)| {
+                                    poolsheet.iter().map(|(versus, _)| {
                                         view! {
                                             <li>
                                                 {format!("{} vs {}", versus.0.get_fullname(), versus.1.get_fullname())}
-                                                <input 
+                                                <input
                                                     type="number"
                                                     on:input={move |ev|{
 
