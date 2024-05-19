@@ -1,6 +1,8 @@
 use std::fmt::format;
+use std::str::FromStr;
 
 use fencing_sport_lib::{
+    bout::FencerScore,
     fencer::{Fencer, SimpleFencer},
     pools::{PoolSheet, SimpleBoutsCreator},
 };
@@ -37,23 +39,13 @@ pub fn App() -> impl IntoView {
 fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
     let initial_fencers = Vec::new();
 
-    // now we store that initial list in a signal
-    // this way, we'll be able to modify the list over time,
-    // adding and removing counters, and it will change reactively
     let (fencers, set_fencers) = create_signal(initial_fencers);
-
-    // let (deug_vec, set_debug_vec) = create_signal("debug_sig".to_string());
 
     let mut fencer_id = 0;
     let add_fencer = move |_| {
         let fencer_sig = create_signal(fencer_id + 1);
         let fencer_ref: NodeRef<html::Input> = create_node_ref();
-        set_fencers.update(move |fencers| {
-            // since `.update()` gives us `&mut T`
-            // we can just use normal Vec methods like `push`
-            fencers.push((fencer_id, fencer_sig, fencer_ref))
-        });
-        // increment the ID so it's always unique
+        set_fencers.update(move |fencers| fencers.push((fencer_id, fencer_sig, fencer_ref)));
         fencer_id += 1;
     };
 
@@ -67,18 +59,6 @@ fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
             .map(|(_, _, node_refs)| node_refs().expect("the error").value())
             .collect();
 
-        // // here, we'll extract the value from the input
-        // let value = input_element()
-        //     // event handlers can only fire after the view
-        //     // is mounted to the DOM, so the `NodeRef` will be `Some`
-        //     .expect("<input> should be mounted")
-        //     // `leptos::HtmlElement<html::Input>` implements `Deref`
-        //     // to a `web_sys::HtmlInputElement`.
-        //     // this means we can call`HtmlInputElement::value()`
-        //     // to get the current value of the input
-        //     .value();
-        // set_name(value);
-        // set_debug_vec(format!("{values:?}"))
         submit_fencers.update(|val| *val = values);
     };
 
@@ -99,11 +79,6 @@ fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
                         children=move |(id, (fencer, set_fencer), fencer_ref)| {
                             view! {
                                 <li>
-                                    // <button
-                                    //     on:click=move |_| set_fencer.update(|n| *n += 1)
-                                    // >
-                                    //     {fencer}
-                                    // </button>
                                     <input type="text"
                                         value=fencer
                                         node_ref=fencer_ref
@@ -112,14 +87,6 @@ fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
                                         on:click=move |_| {
                                             set_fencers.update(|counters| {
                                                 counters.retain(|(counter_id, (signal, _), _)| {
-                                                    // NOTE: in this example, we are creating the signals
-                                                    // in the scope of the parent. This means the memory used to
-                                                    // store them will not be reclaimed until the parent component
-                                                    // is unmounted. Here, we're removing the signal early (i.e, before
-                                                    // the DynamicList is unmounted), so we manually dispose of the signal
-                                                    // to avoid leaking memory.
-                                                    //
-                                                    // This is only necessary in an example with nested signals like this one.
                                                     if counter_id == &id {
                                                         signal.dispose();
                                                     }
@@ -137,7 +104,6 @@ fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
                 </ul>
                 <input type="submit" value="Submit"/>
             </form>
-            // <p> {deug_vec} </p>
         </div>
     }
 }
@@ -182,15 +148,27 @@ fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                             <ol class="bout-list">
                                 {
                                     poolsheet.iter().map(|(versus, _)| {
+                                        let (bout_score_a, set_bout_score_a) = create_signal(None);
+                                        let (bout_score_b, set_bout_score_b) = create_signal(None);
                                         view! {
                                             <li>
                                                 {format!("{} vs {}", versus.0.get_fullname(), versus.1.get_fullname())}
                                                 <input
                                                     type="number"
                                                     on:input={move |ev|{
-
+                                                        let test = event_target_value(&ev).parse::<u8>().ok();
+                                                        set_bout_score_a(test);
                                                     }}
-                                                /><input type="number"/>
+
+                                                />
+                                                <input
+                                                    type="number"
+                                                    on:input={move |ev|{
+                                                        let test = event_target_value(&ev).parse::<u8>().ok();
+                                                        set_bout_score_b(test);
+                                                    }}
+                                                />
+                                                <p> --- {bout_score_a} - {bout_score_b}</p>
                                             </li>
                                         }
                                     }).collect::<Vec<_>>()
