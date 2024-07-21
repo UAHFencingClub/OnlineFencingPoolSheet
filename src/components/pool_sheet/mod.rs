@@ -16,24 +16,28 @@ use serde_json;
 pub fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
     view! {
         {move || {
-            let fencers: Rc<Vec<SimpleFencer>> = Rc::new(
-                fencers
-                    .get()
-                    .into_iter()
-                    .map(|fencer_str| { SimpleFencer::new(fencer_str) })
-                    .collect(),
-            );
-            match PoolSheet::new(&fencers, &SimpleBoutsCreator) {
-                Ok(mut poolsheet) => {
-                    let test = create_signal(poolsheet);
-                    view! {
-                        <div>
-                            <div class="poolsheet">
-                                <table>
-                                    <tr>
-                                        <td></td>
+            let fencers: Vec<SimpleFencer> = fencers
+                .get()
+                .into_iter()
+                .map(|fencer_str| { SimpleFencer::new(fencer_str) })
+                .collect();
+            let (poolsheet_sig, set_poolsheet_sig) = create_signal(PoolSheet::default());
+            set_poolsheet_sig
+                .update(|poolsheet| {
+                    poolsheet.add_fencers(fencers.into_iter());
+                    let _ = poolsheet.create_bouts(&SimpleBoutsCreator);
+                });
+            view! {
+                <div>
+                    <div class="poolsheet">
+                        <table>
+                            <tr>
+                                <td></td>
 
-                                        {fencers
+                                {poolsheet_sig
+                                    .with(|poolsheet| {
+                                        poolsheet
+                                            .get_fencers()
                                             .iter()
                                             .map(|fencer| {
                                                 view! {
@@ -42,10 +46,15 @@ pub fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                                                     </td>
                                                 }
                                             })
-                                            .collect::<Vec<_>>()}
-                                    </tr>
+                                            .collect::<Vec<_>>()
+                                    })}
 
-                                    {fencers
+                            </tr>
+
+                            {poolsheet_sig
+                                .with(|poolsheet| {
+                                    poolsheet
+                                        .get_fencers()
                                         .iter()
                                         .map(|fencer_main| {
                                             view! {
@@ -53,49 +62,62 @@ pub fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                                                     <td class="pool-sheet-fencer">
                                                         {fencer_main.get_fullname()}
                                                     </td>
-                                                    {fencers
-                                                        .iter()
-                                                        .map(|fencer_second| {
-                                                            view! {
-                                                                <td
-                                                                    class=if fencer_second == fencer_main {
-                                                                        "pool-sheet-score-box-null"
-                                                                    } else {
-                                                                        "pool-sheet-score-box"
+                                                    {poolsheet_sig
+                                                        .with(|poolsheet| {
+                                                            poolsheet
+                                                                .get_fencers()
+                                                                .iter()
+                                                                .map(|fencer_second| {
+                                                                    view! {
+                                                                        <td
+                                                                            class=if fencer_second == fencer_main {
+                                                                                "pool-sheet-score-box-null"
+                                                                            } else {
+                                                                                "pool-sheet-score-box"
+                                                                            }
+
+                                                                            id=format!(
+                                                                                "{}-{}",
+                                                                                fencer_main.get_fullname(),
+                                                                                fencer_second.get_fullname(),
+                                                                            )
+                                                                        >
+
+                                                                            {{
+                                                                                let vs = FencerVs::new(fencer_main, fencer_second).unwrap();
+                                                                                let x = poolsheet_sig
+                                                                                    .with(|poolsheet| {
+                                                                                        poolsheet
+                                                                                            .get_bouts()
+                                                                                            .get(&vs)
+                                                                                            .unwrap()
+                                                                                            .get_score(fencer_main)
+                                                                                            .unwrap()
+                                                                                    });
+                                                                                x
+                                                                            }}
+
+                                                                        </td>
                                                                     }
+                                                                })
+                                                                .collect::<Vec<_>>()
+                                                        })}
 
-                                                                    id=format!(
-                                                                        "{}-{}",
-                                                                        fencer_main.get_fullname(),
-                                                                        fencer_second.get_fullname(),
-                                                                    )
-                                                                >
-
-                                                                    {{
-                                                                        let vs = FencerVs::new(fencer_main, fencer_second).unwrap();
-                                                                        let x = poolsheet
-                                                                            .get_bout(&vs)
-                                                                            .unwrap()
-                                                                            .get_score(fencer_main)
-                                                                            .unwrap();
-                                                                        x
-                                                                    }}
-
-                                                                </td>
-                                                            }
-                                                        })
-                                                        .collect::<Vec<_>>()}
                                                 </tr>
                                             }
                                         })
-                                        .collect::<Vec<_>>()}
+                                        .collect::<Vec<_>>()
+                                })}
 
-                                </table>
-                            </div>
+                        </table>
+                    </div>
 
-                            <ol class="bout-list">
+                    <ol class="bout-list">
 
-                                {poolsheet
+                        {poolsheet_sig
+                            .with(|poolsheet| {
+                                poolsheet
+                                    .get_bouts()
                                     .iter()
                                     .map(|(versus, _)| {
                                         let (bout_score_a, set_bout_score_a) = create_signal(None);
@@ -125,23 +147,11 @@ pub fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                                             </li>
                                         }
                                     })
-                                    .collect::<Vec<_>>()}
+                                    .collect::<Vec<_>>()
+                            })}
 
-                            </ol>
-                        </div>
-                    }
-                }
-                Err(err) => {
-                    view! {
-                        // let test = create_signal(poolsheet);
-
-                        // let test = create_signal((poolsheet, fencers));
-
-                        <div>
-                            <p>{format!("{err:?}")}</p>
-                        </div>
-                    }
-                }
+                    </ol>
+                </div>
             }
         }}
     }
