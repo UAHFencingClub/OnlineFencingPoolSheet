@@ -22,7 +22,7 @@ pub fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                 .map(|fencer_str| { SimpleFencer::new(fencer_str) })
                 .collect();
             let (poolsheet_sig, set_poolsheet_sig) = create_signal(
-                PoolSheet::new(fencers, &SimpleBoutsCreator).unwrap(),
+                PoolSheet::new(fencers, &SimpleBoutsCreator).map_or_else(|_| None, |x| Some(x)),
             );
             view! {
                 <div>
@@ -30,123 +30,143 @@ pub fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                         <table>
                             <tr>
                                 <td></td>
-
                                 {poolsheet_sig
                                     .with(|poolsheet| {
-                                        poolsheet
-                                            .get_fencers()
-                                            .iter()
-                                            .map(|fencer| {
-                                                view! {
-                                                    <td class="pool-sheet-fencer-second">
-                                                        {fencer.get_fullname()}
-                                                    </td>
-                                                }
-                                            })
-                                            .collect::<Vec<_>>()
+                                        match poolsheet {
+                                            Some(sheet) => {
+                                                Some(
+                                                    sheet
+                                                        .get_fencers()
+                                                        .iter()
+                                                        .map(|fencer| {
+                                                            view! {
+                                                                <td class="pool-sheet-fencer-second">
+                                                                    {fencer.get_fullname()}
+                                                                </td>
+                                                            }
+                                                        })
+                                                        .collect::<Vec<_>>(),
+                                                )
+                                            }
+                                            None => None,
+                                        }
                                     })}
 
                             </tr>
-
                             {poolsheet_sig
                                 .with(|poolsheet| {
                                     poolsheet
-                                        .get_fencers()
-                                        .iter()
-                                        .map(|fencer_main| {
-                                            view! {
-                                                <tr>
-                                                    <td class="pool-sheet-fencer">
-                                                        {fencer_main.get_fullname()}
-                                                    </td>
-                                                    {poolsheet_sig
-                                                        .with(|poolsheet| {
-                                                            poolsheet
-                                                                .get_fencers()
-                                                                .iter()
-                                                                .map(|fencer_second| {
-                                                                    view! {
-                                                                        <td
-                                                                            class=if fencer_second == fencer_main {
-                                                                                "pool-sheet-score-box-null"
-                                                                            } else {
-                                                                                "pool-sheet-score-box"
-                                                                            }
+                                        .as_ref()
+                                        .map(|sheet| {
+                                            sheet
+                                                .get_fencers()
+                                                .iter()
+                                                .map(|fencer_main| {
+                                                    view! {
+                                                        <tr>
+                                                            <td class="pool-sheet-fencer">
+                                                                {fencer_main.get_fullname()}
+                                                            </td>
+                                                            {poolsheet_sig
+                                                                .with(|poolsheet| {
+                                                                    poolsheet
+                                                                        .as_ref()
+                                                                        .expect("Checked Earlier")
+                                                                        .get_fencers()
+                                                                        .iter()
+                                                                        .map(|fencer_second| {
+                                                                            view! {
+                                                                                <td
+                                                                                    class=if fencer_second == fencer_main {
+                                                                                        "pool-sheet-score-box-null"
+                                                                                    } else {
+                                                                                        "pool-sheet-score-box"
+                                                                                    }
 
-                                                                            id=format!(
-                                                                                "{}-{}",
-                                                                                fencer_main.get_fullname(),
-                                                                                fencer_second.get_fullname(),
-                                                                            )
-                                                                        >
-
-                                                                            {{
-                                                                                let vs = FencerVs::new(
-                                                                                        fencer_main.to_owned().to_owned(),
-                                                                                        fencer_second.to_owned().to_owned(),
+                                                                                    id=format!(
+                                                                                        "{}-{}",
+                                                                                        fencer_main.get_fullname(),
+                                                                                        fencer_second.get_fullname(),
                                                                                     )
-                                                                                    .unwrap();
-                                                                                let x = poolsheet_sig
-                                                                                    .with(|poolsheet| {
-                                                                                        poolsheet
-                                                                                            .get_bout(&vs)
-                                                                                            .unwrap()
-                                                                                            .get_score(fencer_main)
-                                                                                            .unwrap()
-                                                                                    });
-                                                                                x
-                                                                            }}
+                                                                                >
 
-                                                                        </td>
-                                                                    }
-                                                                })
-                                                                .collect::<Vec<_>>()
-                                                        })}
+                                                                                    {{
+                                                                                        FencerVs::new(
+                                                                                                fencer_main.to_owned().to_owned(),
+                                                                                                fencer_second.to_owned().to_owned(),
+                                                                                            )
+                                                                                            .ok()
+                                                                                            .map(|y| {
+                                                                                                let x = poolsheet_sig
+                                                                                                    .with(|poolsheet| {
+                                                                                                        poolsheet
+                                                                                                            .as_ref()
+                                                                                                            .expect("Checked Earlier")
+                                                                                                            .get_bout(&y)
+                                                                                                            .unwrap()
+                                                                                                            .get_score(fencer_main)
+                                                                                                            .unwrap()
+                                                                                                    });
+                                                                                                x
+                                                                                            })
+                                                                                    }}
 
-                                                </tr>
-                                            }
+                                                                                </td>
+                                                                            }
+                                                                        })
+                                                                        .collect::<Vec<_>>()
+                                                                })}
+
+                                                        </tr>
+                                                    }
+                                                })
+                                                .collect::<Vec<_>>()
                                         })
-                                        .collect::<Vec<_>>()
                                 })}
 
                         </table>
                     </div>
-
                     <ol class="bout-list">
-
                         {poolsheet_sig
                             .with(|poolsheet| {
-                                poolsheet
-                                    .iter_bouts()
-                                    .map(|(versus, _)| {
-                                        let (bout_score_a, set_bout_score_a) = create_signal(None);
-                                        let (bout_score_b, set_bout_score_b) = create_signal(None);
-                                        view! {
-                                            <li>
-                                                {format!(
-                                                    "{} vs {}",
-                                                    versus.0.get_fullname(),
-                                                    versus.1.get_fullname(),
-                                                )}
-                                                <input
-                                                    type="number"
-                                                    on:input=move |ev| {
-                                                        let test = event_target_value(&ev).parse::<u8>().ok();
-                                                        set_bout_score_a(test);
+                                match poolsheet {
+                                    Some(sheet) => {
+                                        Some(
+                                            sheet
+                                                .iter_bouts()
+                                                .map(|(versus, _)| {
+                                                    let (bout_score_a, set_bout_score_a) = create_signal(None);
+                                                    let (bout_score_b, set_bout_score_b) = create_signal(None);
+                                                    view! {
+                                                        <li>
+                                                            {format!(
+                                                                "{} vs {}",
+                                                                versus.0.get_fullname(),
+                                                                versus.1.get_fullname(),
+                                                            )}
+                                                            <input
+                                                                type="number"
+                                                                on:input=move |ev| {
+                                                                    let test = event_target_value(&ev).parse::<u8>().ok();
+                                                                    set_bout_score_a(test);
+                                                                }
+                                                            />
+                                                            <input
+                                                                type="number"
+                                                                on:input=move |ev| {
+                                                                    let test = event_target_value(&ev).parse::<u8>().ok();
+                                                                    set_bout_score_b(test);
+                                                                }
+                                                            />
+                                                            <p>--- {bout_score_a} - {bout_score_b}</p>
+                                                        </li>
                                                     }
-                                                />
-                                                <input
-                                                    type="number"
-                                                    on:input=move |ev| {
-                                                        let test = event_target_value(&ev).parse::<u8>().ok();
-                                                        set_bout_score_b(test);
-                                                    }
-                                                />
-                                                <p>--- {bout_score_a} - {bout_score_b}</p>
-                                            </li>
-                                        }
-                                    })
-                                    .collect::<Vec<_>>()
+                                                })
+                                                .collect::<Vec<_>>(),
+                                        )
+                                    }
+                                    None => None,
+                                }
                             })}
 
                     </ol>

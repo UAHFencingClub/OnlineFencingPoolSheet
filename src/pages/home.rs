@@ -1,4 +1,3 @@
-use crate::components::counter_btn::Button;
 use leptos::*;
 
 /// Default Home Page
