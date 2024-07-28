@@ -1,11 +1,6 @@
 use std::fmt::format;
 use std::str::FromStr;
 
-use fencing_sport_lib::{
-    bout::FencerScore,
-    fencer::{Fencer, SimpleFencer},
-    pools::{PoolSheet, SimpleBoutsCreator},
-};
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;

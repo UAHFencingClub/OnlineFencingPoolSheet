@@ -4,7 +4,7 @@ use std::{fmt::format, rc::Rc};
 use fencing_sport_lib::{
     bout::{FencerScore, FencerVs},
     fencer::{Fencer, SimpleFencer},
-    pools::{PoolSheet, SimpleBoutsCreator},
+    pools::{bout_creation::SimpleBoutsCreator, PoolSheet},
 };
 use leptos::*;
 use leptos_meta::*;
@@ -21,12 +21,9 @@ pub fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                 .into_iter()
                 .map(|fencer_str| { SimpleFencer::new(fencer_str) })
                 .collect();
-            let (poolsheet_sig, set_poolsheet_sig) = create_signal(PoolSheet::default());
-            set_poolsheet_sig
-                .update(|poolsheet| {
-                    poolsheet.add_fencers(fencers.into_iter());
-                    let _ = poolsheet.create_bouts(&SimpleBoutsCreator);
-                });
+            let (poolsheet_sig, set_poolsheet_sig) = create_signal(
+                PoolSheet::new(fencers, &SimpleBoutsCreator).unwrap(),
+            );
             view! {
                 <div>
                     <div class="poolsheet">
@@ -84,12 +81,15 @@ pub fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                                                                         >
 
                                                                             {{
-                                                                                let vs = FencerVs::new(fencer_main, fencer_second).unwrap();
+                                                                                let vs = FencerVs::new(
+                                                                                        fencer_main.to_owned().to_owned(),
+                                                                                        fencer_second.to_owned().to_owned(),
+                                                                                    )
+                                                                                    .unwrap();
                                                                                 let x = poolsheet_sig
                                                                                     .with(|poolsheet| {
                                                                                         poolsheet
-                                                                                            .get_bouts()
-                                                                                            .get(&vs)
+                                                                                            .get_bout(&vs)
                                                                                             .unwrap()
                                                                                             .get_score(fencer_main)
                                                                                             .unwrap()
@@ -117,8 +117,7 @@ pub fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                         {poolsheet_sig
                             .with(|poolsheet| {
                                 poolsheet
-                                    .get_bouts()
-                                    .iter()
+                                    .iter_bouts()
                                     .map(|(versus, _)| {
                                         let (bout_score_a, set_bout_score_a) = create_signal(None);
                                         let (bout_score_b, set_bout_score_b) = create_signal(None);
