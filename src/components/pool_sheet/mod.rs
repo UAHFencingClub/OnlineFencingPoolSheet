@@ -1,11 +1,13 @@
 use std::str::FromStr;
 use std::{fmt::format, rc::Rc};
 
+use fencing_sport_lib::bout::Bout;
 use fencing_sport_lib::{
     bout::{FencerScore, FencerVs},
     fencer::{Fencer, SimpleFencer},
-    pools::{bout_creation::SimpleBoutsCreator, PoolSheet},
+    pools::{bout_creation::SimpleBoutsCreator, PoolBoutIter, PoolSheet, PoolSheetBout},
 };
+use itertools::Itertools;
 use leptos::*;
 use leptos_dom::Text;
 use leptos_meta::*;
@@ -30,9 +32,12 @@ pub fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                     .with(|poolsheet_option| {
                         match poolsheet_option {
                             Some(poolsheet) => {
-                                view! { <PoolSheetTable poolsheet=poolsheet/> }
+                                view! {
+                                    <PoolSheetTable poolsheet=poolsheet/>
+                                    <BoutList bouts=poolsheet.iter_bouts()/>
+                                }
                             }
-                            None => View::Text(view! { "Goodbyte Poolsheet" }),
+                            None => Fragment::new(vec![View::Text(view! { "Goodbyte Poolsheet" })]),
                         }
                     })
             }}
@@ -56,7 +61,18 @@ pub fn PoolSheetTable<'a>(poolsheet: &'a PoolSheet<SimpleFencer>) -> impl IntoVi
 }
 
 #[component]
-fn BoutList() -> impl IntoView {}
+fn BoutList<'a>(bouts: PoolBoutIter<'a, SimpleFencer>) -> impl IntoView {
+    view! {
+        <ol>
+            {bouts
+                .into_iter()
+                .map(|(vs, bout)| {
+                    view! { <li>{vs.0.get_fullname()} vs {vs.1.get_fullname()}</li> }
+                })
+                .collect::<Vec<_>>()}
+        </ol>
+    }
+}
 
 #[component]
 pub fn BoutScoreTableCell<'a>(

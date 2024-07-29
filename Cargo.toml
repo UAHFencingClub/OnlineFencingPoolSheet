@@ -17,6 +17,7 @@ web-sys = "0.3.69"
 serde = "1.0.197"
 serde_json = "1.0.115"
 fencing-sport-lib = { path = "../../fencing-sport-lib" }
+itertools = "0.13.0"
 
 # utils
 # strum = { version = "0.25", features = ["derive", "strum_macros"] }
