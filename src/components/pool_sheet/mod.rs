@@ -7,6 +7,7 @@ use fencing_sport_lib::{
     pools::{bout_creation::SimpleBoutsCreator, PoolSheet},
 };
 use leptos::*;
+use leptos_dom::Text;
 use leptos_meta::*;
 use leptos_router::*;
 use log::info;
@@ -28,8 +29,10 @@ pub fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
                 poolsheet_sig
                     .with(|poolsheet_option| {
                         match poolsheet_option {
-                            Some(poolsheet) => view! { "Hello Sheet" },
-                            None => view! { "Goodbye Sheet" },
+                            Some(poolsheet) => {
+                                view! { <PoolSheetTable poolsheet=poolsheet/> }
+                            }
+                            None => View::Text(view! { "Goodbyte Poolsheet" }),
                         }
                     })
             }}
@@ -39,20 +42,61 @@ pub fn PoolSheet(fencers: ReadSignal<Vec<String>>) -> impl IntoView {
 }
 
 #[component]
-pub fn PoolSheetTable() -> impl IntoView {}
+pub fn PoolSheetTable<'a>(poolsheet: &'a PoolSheet<SimpleFencer>) -> impl IntoView {
+    let fencers = poolsheet.get_fencers();
+    view! {
+        <table>
+            <PoolTableHeader fencers=&fencers/>
+            {fencers
+                .iter()
+                .map(|fencer| view! { <PoolTableRow main_fencer=fencer fencers=&fencers/> })
+                .collect::<Vec<_>>()}
+        </table>
+    }
+}
 
 #[component]
 fn BoutList() -> impl IntoView {}
 
 #[component]
-pub fn BoutScoreTableCell(
-    main_fencer: SimpleFencer,
-    secondary_fencer: SimpleFencer,
+pub fn BoutScoreTableCell<'a>(
+    main_fencer: &'a SimpleFencer,
+    secondary_fencer: &'a SimpleFencer,
 ) -> impl IntoView {
+    if main_fencer == secondary_fencer {
+        view! { <td>N</td> }
+    } else {
+        view! { <td>Y</td> }
+    }
 }
 
 #[component]
-pub fn PoolTableHeader() -> impl IntoView {}
+pub fn PoolTableHeader<'a>(fencers: &'a Vec<&'a SimpleFencer>) -> impl IntoView {
+    view! {
+        <tr>
+            <th></th>
+            {fencers
+                .iter()
+                .map(|fencer| view! { <th>{fencer.get_fullname()}</th> })
+                .collect::<Vec<_>>()}
+        </tr>
+    }
+}
 
 #[component]
-pub fn PoolFencerTableRow(children: Children) -> impl IntoView {}
+pub fn PoolTableRow<'a>(
+    main_fencer: &'a SimpleFencer,
+    fencers: &'a [&'a SimpleFencer],
+) -> impl IntoView {
+    view! {
+        <tr>
+            <td>{main_fencer.get_fullname()}</td>
+            {fencers
+                .iter()
+                .map(|fencer| {
+                    view! { <BoutScoreTableCell main_fencer=main_fencer secondary_fencer=fencer/> }
+                })
+                .collect::<Vec<_>>()}
+        </tr>
+    }
+}
