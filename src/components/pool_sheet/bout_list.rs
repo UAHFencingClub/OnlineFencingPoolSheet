@@ -1,10 +1,11 @@
 use std::rc::Rc;
 
+use ev::Event;
 use fencing_sport_lib::{
     bout::{FencerScore, FencerVs},
     cards::Cards,
     fencer::{Fencer, SimpleFencer},
-    pools::PoolBoutIter,
+    pools::{PoolBoutIter, PoolSheetFencerScore, PoolSheetVersus},
 };
 
 use leptos::*;
@@ -12,39 +13,37 @@ use leptos::*;
 const POOL_MAX_SCORE: u8 = 5;
 
 #[component]
-pub fn BoutList<FV, FS, FG>(
-    versus: FV,
+pub fn BoutList<FS, FG>(
+    versus: Vec<PoolSheetVersus<SimpleFencer>>,
     set_score_closure: FS,
     get_score_closure: FG,
 ) -> impl IntoView
 where
-    FS: Fn(FencerScore<SimpleFencer, SimpleFencer>, FencerScore<SimpleFencer, SimpleFencer>)
+    FS: Fn(PoolSheetFencerScore<SimpleFencer>, PoolSheetFencerScore<SimpleFencer>)
         + Clone
         + 'static,
-    FG: Fn(FencerVs<SimpleFencer, SimpleFencer>) -> Option<(u8, u8)> + Clone + 'static,
-    FV: Fn() -> Vec<FencerVs<SimpleFencer, Rc<SimpleFencer>>> + Clone + 'static,
+    FG: Fn(PoolSheetVersus<SimpleFencer>) -> Option<(u8, u8)> + Clone + 'static,
 {
     view! {
         <ol>
-            {bouts
+            {versus
                 .into_iter()
-                .map(|(vs, bout)| {
+                .map(|vs| {
+                    let local_vs = vs.clone();
+                    let get_score_closure_local = get_score_closure.clone();
+                    let get_my_score = move || { get_score_closure_local(local_vs.clone()) };
                     view! {
                         <li>
                             <div>{vs.0.get_fullname()} vs {vs.1.get_fullname()}</div>
                             <BoutListInputItem
-                                fencer_a=bout.get_fencers().0.clone()
-                                fencer_b=bout.get_fencers().1.clone()
+                                versus=vs.clone()
                                 set_sheet_score=set_score_closure.clone()
+                                get_sheet_score=get_my_score.clone()
                             />
                             <p>
 
                                 {
-                                    let get = get_score_closure.clone();
-                                    let fa = vs.0.as_ref().clone();
-                                    let fb = vs.1.as_ref().clone();
-                                    let x = FencerVs::new(fa, fb).unwrap();
-                                    let scores = get(x);
+                                    let scores = get_my_score();
                                     format!("{scores:?}")
                                 }
 
@@ -58,37 +57,38 @@ where
 }
 
 #[component]
-pub fn BoutListInputItem<F>(
-    fencer_a: SimpleFencer,
-    fencer_b: SimpleFencer,
-    set_sheet_score: F,
+pub fn BoutListInputItem<FG, FS>(
+    versus: PoolSheetVersus<SimpleFencer>,
+    set_sheet_score: FG,
+    get_sheet_score: FS,
 ) -> impl IntoView
 where
-    F: Fn(FencerScore<SimpleFencer, SimpleFencer>, FencerScore<SimpleFencer, SimpleFencer>)
+    FG: Fn(PoolSheetFencerScore<SimpleFencer>, PoolSheetFencerScore<SimpleFencer>)
         + Clone
         + 'static,
+    FS: Fn() -> Option<(u8, u8)> + Clone + 'static,
 {
     let (score, set_score) = create_signal((None::<u8>, None::<u8>));
 
-    let fencer_aa = fencer_a.clone();
-    let fencer_ab = fencer_b.clone();
-    let fencer_ba = fencer_a;
-    let fencer_bb = fencer_b;
+    let fencer_aa = versus.0.clone();
+    let fencer_ab = versus.1.clone();
+    let fencer_ba = versus.0.clone();
+    let fencer_bb = versus.1.clone();
 
     let set_sheet_score_a = set_sheet_score.clone();
     let set_sheet_score_b = set_sheet_score.clone();
+
+    let get_sheet_score_a1 = get_sheet_score.clone();
+    let get_sheet_score_b1 = get_sheet_score.clone();
+
+    let get_sheet_score_a2 = get_sheet_score.clone();
+    let get_sheet_score_b2 = get_sheet_score.clone();
     view! {
         <input
             type="number"
             on:input=move |ev| {
-                let score_a = match event_target_value(&ev).parse::<u8>().ok() {
-                    Some(score) => {
-                        if score > POOL_MAX_SCORE { Some(POOL_MAX_SCORE) } else { Some(score) }
-                    }
-                    None => None,
-                };
-                let score_b = score.get().1;
-                set_score((score_a, score_b));
+                let score_a = parse_score_from_event(&ev);
+                let score_b = get_sheet_score_a1().map(|x| x.1);
                 if let Some((a, b)) = score_a.zip(score_b) {
                     let fencer_a = FencerScore::new(fencer_aa.clone(), a, Cards::default());
                     let fencer_b = FencerScore::new(fencer_ab.clone(), b, Cards::default());
@@ -96,20 +96,14 @@ where
                 }
             }
 
-            prop:value=move || { score.get().0 }
+            prop:value=move || { get_sheet_score_a2().map(|x| x.0) }
         />
         "vs."
         <input
             type="number"
             on:input=move |ev| {
-                let score_b = match event_target_value(&ev).parse::<u8>().ok() {
-                    Some(score) => {
-                        if score > POOL_MAX_SCORE { Some(POOL_MAX_SCORE) } else { Some(score) }
-                    }
-                    None => None,
-                };
-                let score_a = score.get().0;
-                set_score((score_a, score_b));
+                let score_b = parse_score_from_event(&ev);
+                let score_a = get_sheet_score_b1().map(|x| x.0);
                 if let Some((a, b)) = score_a.zip(score_b) {
                     let fencer_a = FencerScore::new(fencer_ba.clone(), a, Cards::default());
                     let fencer_b = FencerScore::new(fencer_bb.clone(), b, Cards::default());
@@ -117,7 +111,20 @@ where
                 }
             }
 
-            prop:value=move || { score.get().1 }
+            prop:value=move || { get_sheet_score_b2().map(|x| x.1) }
         />
+    }
+}
+
+fn parse_score_from_event(ev: &Event) -> Option<u8> {
+    match event_target_value(ev).parse::<u8>().ok() {
+        Some(score) => {
+            if score > POOL_MAX_SCORE {
+                Some(POOL_MAX_SCORE)
+            } else {
+                Some(score)
+            }
+        }
+        None => None,
     }
 }

@@ -42,10 +42,11 @@ pub fn PoolSheet(fencers: Vec<SimpleFencer>) -> impl IntoView {
                         .collect::<Vec<_>>()
                 })
             };
+            let versus = get_versus();
             view! {
                 <PoolSheetTable fencers=get_fencers/>
                 <BoutList
-                    versus=get_versus
+                    versus=versus
                     set_score_closure=set_bout_score
                     get_score_closure=get_bout_score
                 />
