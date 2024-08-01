@@ -37,6 +37,7 @@ pub fn PoolSheet(fencers: Vec<SimpleFencer>) -> impl IntoView {
                 })
             };
             let get_bout_main_score = move |fencer_main: SimpleFencer, fencer_sec: SimpleFencer| {
+                info!("Getting main score for {fencer_main:?} {fencer_sec:?}");
                 poolsheet_sig.with(|sheet| {
                     let vs = FencerVs::new(fencer_main.clone(), fencer_sec.clone()).unwrap();
                     let bout = sheet.get_bout(&vs).unwrap();
