@@ -29,13 +29,13 @@ pub fn App() -> impl IntoView {
     let (competiors, set_competitors) = create_signal(Vec::<String>::new());
     view! {
         <FencerList submit_fencers=set_competitors/>
-        <PoolSheet fencers={
+        {move || {
             let fencers: Vec<SimpleFencer> = competiors
                 .get()
                 .into_iter()
                 .map(|fencer_str| { SimpleFencer::new(fencer_str) })
                 .collect();
-            fencers
-        }/>
+            view! { <PoolSheet fencers=fencers/> }
+        }}
     }
 }
