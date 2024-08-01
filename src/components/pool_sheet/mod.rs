@@ -9,6 +9,7 @@ mod bout_list;
 use bout_list::BoutList;
 
 mod sheet_table;
+use log::info;
 use sheet_table::PoolSheetTable;
 
 #[component]

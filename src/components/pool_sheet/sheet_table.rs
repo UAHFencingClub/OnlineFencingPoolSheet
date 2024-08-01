@@ -1,12 +1,15 @@
 use fencing_sport_lib::fencer::{Fencer, SimpleFencer};
 
 use leptos::*;
+use log::info;
 
 #[component]
 pub fn PoolSheetTable<F>(fencers: F) -> impl IntoView
 where
     F: Fn() -> Vec<SimpleFencer> + Clone + 'static,
 {
+    info!("Rendering PoolSheetTable");
+
     view! {
         <table>
             <PoolTableHeader fencers=fencers.clone()/>
@@ -23,6 +26,8 @@ pub fn BoutScoreTableCell<'a>(
     main_fencer: &'a SimpleFencer,
     secondary_fencer: &'a SimpleFencer,
 ) -> impl IntoView {
+    info!("Rendering BoutScoreTableCell");
+
     if main_fencer == secondary_fencer {
         view! { <td>N</td> }
     } else {
@@ -35,6 +40,8 @@ pub fn PoolTableHeader<F>(fencers: F) -> impl IntoView
 where
     F: Fn() -> Vec<SimpleFencer> + Clone,
 {
+    info!("Rendering PoolTableHeader");
+
     view! {
         <tr>
             <th></th>
@@ -51,6 +58,7 @@ pub fn PoolTableRow<'a, F>(main_fencer: &'a SimpleFencer, fencers: F) -> impl In
 where
     F: Fn() -> Vec<SimpleFencer> + Clone + 'static,
 {
+    info!("Rendering PoolTableRow");
     view! {
         <tr>
             <td>{main_fencer.get_fullname()}</td>
