@@ -1,4 +1,5 @@
 use fencing_sport_lib::{
+    bout::FencerVs,
     fencer::SimpleFencer,
     pools::{bout_creation::SimpleBoutsCreator, PoolSheet},
 };
@@ -35,6 +36,13 @@ pub fn PoolSheet(fencers: Vec<SimpleFencer>) -> impl IntoView {
                     bout.get_scores()
                 })
             };
+            let get_bout_main_score = move |fencer_main: SimpleFencer, fencer_sec: SimpleFencer| {
+                poolsheet_sig.with(|sheet| {
+                    let vs = FencerVs::new(fencer_main.clone(), fencer_sec.clone()).unwrap();
+                    let bout = sheet.get_bout(&vs).unwrap();
+                    bout.get_score(fencer_main)
+                })
+            };
             let get_versus = move || {
                 poolsheet_sig.with(|sheet| {
                     sheet
@@ -45,7 +53,7 @@ pub fn PoolSheet(fencers: Vec<SimpleFencer>) -> impl IntoView {
             };
             let versus = get_versus();
             view! {
-                <PoolSheetTable fencers=get_fencers/>
+                <PoolSheetTable fencers=get_fencers get_main_score=get_bout_main_score/>
                 <BoutList
                     versus=versus
                     set_score_closure=set_bout_score
