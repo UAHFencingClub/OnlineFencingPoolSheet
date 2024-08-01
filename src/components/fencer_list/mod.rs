@@ -1,11 +1,4 @@
-use std::fmt::format;
-use std::str::FromStr;
-
 use leptos::*;
-use leptos_meta::*;
-use leptos_router::*;
-use log::info;
-use serde_json;
 
 #[component]
 pub fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
@@ -46,7 +39,7 @@ pub fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
                         key=|counter| counter.0
                         // `children` receives each item from your `each` iterator
                         // and returns a view
-                        children=move |(id, (fencer, set_fencer), fencer_ref)| {
+                        children=move |(id, (fencer, _set_fencer), fencer_ref)| {
                             view! {
                                 <li>
                                     <input type="text" value=fencer node_ref=fencer_ref/>

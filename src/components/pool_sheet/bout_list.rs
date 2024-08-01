@@ -1,11 +1,9 @@
-use std::rc::Rc;
-
 use ev::Event;
 use fencing_sport_lib::{
-    bout::{FencerScore, FencerVs},
+    bout::FencerScore,
     cards::Cards,
     fencer::{Fencer, SimpleFencer},
-    pools::{PoolBoutIter, PoolSheetFencerScore, PoolSheetVersus},
+    pools::{PoolSheetFencerScore, PoolSheetVersus},
 };
 
 use leptos::*;
@@ -81,11 +79,9 @@ where
     let set_sheet_score_a = set_sheet_score.clone();
     let set_sheet_score_b = set_sheet_score.clone();
 
-    let get_sheet_score_a1 = get_sheet_score.clone();
-    let get_sheet_score_b1 = get_sheet_score.clone();
+    let get_sheet_score_a = get_sheet_score.clone();
+    let get_sheet_score_b = get_sheet_score.clone();
 
-    let get_sheet_score_a2 = get_sheet_score.clone();
-    let get_sheet_score_b2 = get_sheet_score.clone();
     view! {
         <input
             type="number"
@@ -102,7 +98,7 @@ where
                 }
             }
 
-            prop:value=move || { get_sheet_score_a2().map(|x| x.0) }
+            prop:value=move || { get_sheet_score_a().map(|x| x.0) }
         />
         "vs."
         <input
@@ -120,7 +116,7 @@ where
                 }
             }
 
-            prop:value=move || { get_sheet_score_b2().map(|x| x.1) }
+            prop:value=move || { get_sheet_score_b().map(|x| x.1) }
         />
     }
 }

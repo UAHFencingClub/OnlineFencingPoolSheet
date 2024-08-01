@@ -1,6 +1,5 @@
 use fencing_sport_lib::fencer::{Fencer, SimpleFencer};
 
-use html::main;
 use leptos::*;
 use log::info;
 

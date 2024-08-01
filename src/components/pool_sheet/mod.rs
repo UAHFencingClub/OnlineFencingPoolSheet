@@ -48,7 +48,7 @@ pub fn PoolSheet(fencers: Vec<SimpleFencer>) -> impl IntoView {
                 poolsheet_sig.with(|sheet| {
                     sheet
                         .iter_bouts()
-                        .map(|(x, y)| (x.clone()))
+                        .map(|(vs, _)| (vs.clone()))
                         .collect::<Vec<_>>()
                 })
             };
