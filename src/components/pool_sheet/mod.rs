@@ -1,7 +1,7 @@
 use fencing_sport_lib::{
     bout::FencerVs,
     fencer::SimpleFencer,
-    pools::{bout_creation::SimpleBoutsCreator, PoolSheet},
+    pools::{bout_creation::SimpleBoutsCreator, PoolResults, PoolSheet},
 };
 
 use leptos::*;
@@ -14,7 +14,10 @@ use log::info;
 use sheet_table::PoolSheetTable;
 
 #[component]
-pub fn PoolSheet(fencers: Vec<SimpleFencer>) -> impl IntoView {
+pub fn PoolSheet<F>(fencers: Vec<SimpleFencer>, on_complete: F) -> impl IntoView
+where
+    F: Fn(PoolResults<SimpleFencer>) + 'static,
+{
     let option_poolsheet = PoolSheet::new(fencers, &SimpleBoutsCreator).ok();
 
     match option_poolsheet {
@@ -60,6 +63,14 @@ pub fn PoolSheet(fencers: Vec<SimpleFencer>) -> impl IntoView {
                     set_score_closure=set_bout_score
                     get_score_closure=get_bout_score
                 />
+                <button on:click=move |_| {
+                    poolsheet_sig
+                        .with(|sheet| {
+                            if sheet.is_finished() {
+                                on_complete(sheet.finish().unwrap())
+                            }
+                        });
+                }>Get Results</button>
             }
         }
         None => Fragment::new(vec![View::Text(view! { "Goodbyte Poolsheet" })]),
