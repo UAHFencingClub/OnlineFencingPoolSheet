@@ -95,10 +95,14 @@ where
                     let fencer_a = FencerScore::new(fencer_aa.clone(), a, Cards::default());
                     let fencer_b = FencerScore::new(fencer_ab.clone(), b, Cards::default());
                     set_sheet_score_a(fencer_a, fencer_b);
+                } else {
+                    let fencer_a = FencerScore::new(fencer_aa.clone(), 0, Cards::default());
+                    let fencer_b = FencerScore::new(fencer_ab.clone(), 0, Cards::default());
+                    set_sheet_score_a(fencer_a, fencer_b);
                 }
             }
 
-            prop:value=move || { get_sheet_score_a().map(|x| x.0) }
+            prop:value=move || { score.get().0 }
         />
         "vs."
         <input
@@ -113,10 +117,14 @@ where
                     let fencer_a = FencerScore::new(fencer_ba.clone(), a, Cards::default());
                     let fencer_b = FencerScore::new(fencer_bb.clone(), b, Cards::default());
                     set_sheet_score_b(fencer_a, fencer_b);
+                } else {
+                    let fencer_a = FencerScore::new(fencer_ba.clone(), 0, Cards::default());
+                    let fencer_b = FencerScore::new(fencer_bb.clone(), 0, Cards::default());
+                    set_sheet_score_b(fencer_a, fencer_b);
                 }
             }
 
-            prop:value=move || { get_sheet_score_b().map(|x| x.1) }
+            prop:value=move || { score.get().1 }
         />
     }
 }
