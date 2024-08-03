@@ -24,8 +24,8 @@ Github-Pages-Release:
     environment:
     name: github-pages
     url: ${{ steps.deployment.outputs.page_url }}
-
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    # runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4 # repo checkout
