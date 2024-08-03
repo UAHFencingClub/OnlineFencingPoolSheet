@@ -45,12 +45,12 @@ where
     let secondary_fencer = secondary_fencer.clone();
 
     if main_fencer == secondary_fencer {
-        view! { <td class="poolsheet-cell-blank">X</td> }
+        view! { <td class="poolsheet-cell-blank"></td> }
     } else {
         let get_my_score = move || {
             let tmp = match get_main_score(main_fencer.clone(), secondary_fencer.clone()) {
                 Some(x) => x.to_string(),
-                None => String::from("/"),
+                None => String::from(""),
             };
             info!("Getting score for {main_fencer:?} - {secondary_fencer:?} = {tmp:?}");
             tmp
