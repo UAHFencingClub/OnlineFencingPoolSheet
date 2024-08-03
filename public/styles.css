@@ -58,11 +58,11 @@ table, th, td {
   border: 1px solid black;
 }
 
-.pool-sheet-score-box {
+.poolsheet-cell {
   height: same-as-width
 }
 
-.pool-sheet-score-box-null {
+.poolsheet-cell-blank {
   background-color: black;
 }
 

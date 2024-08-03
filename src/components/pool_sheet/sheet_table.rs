@@ -12,7 +12,7 @@ where
     info!("Rendering PoolSheetTable");
 
     view! {
-        <table>
+        <table class="poolsheet-table">
             <PoolTableHeader fencers=fencers.clone()/>
             {fencers()
                 .iter()
@@ -45,7 +45,7 @@ where
     let secondary_fencer = secondary_fencer.clone();
 
     if main_fencer == secondary_fencer {
-        view! { <td>X</td> }
+        view! { <td class="poolsheet-cell-blank">X</td> }
     } else {
         let get_my_score = move || {
             let tmp = match get_main_score(main_fencer.clone(), secondary_fencer.clone()) {
@@ -55,7 +55,7 @@ where
             info!("Getting score for {main_fencer:?} - {secondary_fencer:?} = {tmp:?}");
             tmp
         };
-        view! { <td>{get_my_score}</td> }
+        view! { <td class="poolsheet-cell">{get_my_score}</td> }
     }
 }
 
@@ -71,7 +71,9 @@ where
             <th></th>
             {fencers()
                 .iter()
-                .map(|fencer| view! { <th>{fencer.get_fullname()}</th> })
+                .map(|fencer| {
+                    view! { <td class="pool-sheet-fencer-second">{fencer.get_fullname()}</td> }
+                })
                 .collect::<Vec<_>>()}
         </tr>
     }
