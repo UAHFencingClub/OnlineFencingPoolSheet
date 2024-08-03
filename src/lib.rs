@@ -24,8 +24,8 @@ pub fn App() -> impl IntoView {
 
         {move || {
             match results.get() {
-                Some(results) => view! { <PoolResultTable pool_results=results/> },
-                None => View::Text(view! { "Goodby Results" }),
+                Some(results) => view! { <PoolResultTable pool_results=results/> }.into_view(),
+                None => view! { <p>"No Results Yet"</p> }.into_view(),
             }
         }}
     }

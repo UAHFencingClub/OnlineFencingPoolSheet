@@ -23,7 +23,7 @@ pub fn FencerList(submit_fencers: WriteSignal<Vec<SimpleFencer>>) -> impl IntoVi
             .get()
             .into_iter()
             .map(|(_, _, node_refs)| node_refs().expect("the error").value())
-            .map(|fencer_str| SimpleFencer::new(fencer_str))
+            .map(SimpleFencer::new)
             .collect();
 
         submit_fencers.update(|val| *val = values);
@@ -31,7 +31,7 @@ pub fn FencerList(submit_fencers: WriteSignal<Vec<SimpleFencer>>) -> impl IntoVi
 
     view! {
         <div>
-            <button on:click=add_fencer>"Add Counter"</button>
+            <button on:click=add_fencer>"Add Fencer"</button>
             <form on:submit=on_submit>
                 <ul>
                     <For

@@ -10,6 +10,7 @@ mod bout_list;
 use bout_list::BoutList;
 
 mod sheet_table;
+use leptos_dom::Text;
 use log::info;
 use sheet_table::PoolSheetTable;
 
@@ -18,10 +19,10 @@ pub fn PoolSheet<F>(fencers: Vec<SimpleFencer>, on_complete: F) -> impl IntoView
 where
     F: Fn(PoolResults<SimpleFencer>) + 'static,
 {
-    let option_poolsheet = PoolSheet::new(fencers, &SimpleBoutsCreator).ok();
+    let option_poolsheet = PoolSheet::new(fencers, &SimpleBoutsCreator);
 
     match option_poolsheet {
-        Some(poolsheet) => {
+        Ok(poolsheet) => {
             let (poolsheet_sig, set_poolsheet_sig) = create_signal(poolsheet);
 
             let set_bout_score = move |fencer_a, fencer_b| {
@@ -72,7 +73,10 @@ where
                         });
                 }>Get Results</button>
             }
+            .into_view()
         }
-        None => Fragment::new(vec![View::Text(view! { "Goodbyte Poolsheet" })]),
+
+        Err(e) => view! { <p>{format!("Error {:?}", e)}</p> }.into_view(),
     }
 }
+// Err(e) => Fragment::new(vec![View::Text(Text::new(format!("Error {:?}", e).into()))]),

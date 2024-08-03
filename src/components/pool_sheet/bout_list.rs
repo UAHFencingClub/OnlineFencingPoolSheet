@@ -35,19 +35,12 @@ where
                     let get_my_score = move || { get_score_closure_local(local_vs.clone()) };
                     view! {
                         <li>
-                            <div>{vs.0.get_fullname()} vs {vs.1.get_fullname()}</div>
+                            <div>{vs.0.get_fullname()} vs. {vs.1.get_fullname()}</div>
                             <BoutListInputItem
                                 versus=vs.clone()
                                 set_sheet_score=set_score_closure.clone()
                                 get_sheet_score=get_my_score.clone()
                             />
-                            <p>
-                                {move || {
-                                    let scores = get_my_score();
-                                    format!("{scores:?}")
-                                }}
-
-                            </p>
                         </li>
                     }
                 })
@@ -104,7 +97,7 @@ where
 
             prop:value=move || { score.get().0 }
         />
-        "vs."
+        " vs. "
         <input
             type="number"
             on:input=move |ev| {
