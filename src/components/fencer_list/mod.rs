@@ -1,7 +1,8 @@
+use fencing_sport_lib::fencer::SimpleFencer;
 use leptos::*;
 
 #[component]
-pub fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
+pub fn FencerList(submit_fencers: WriteSignal<Vec<SimpleFencer>>) -> impl IntoView {
     let initial_fencers = Vec::new();
 
     let (fencers, set_fencers) = create_signal(initial_fencers);
@@ -18,10 +19,11 @@ pub fn FencerList(submit_fencers: WriteSignal<Vec<String>>) -> impl IntoView {
         // stop the page from reloading!
         ev.prevent_default();
 
-        let values: Vec<String> = fencers
+        let values: Vec<SimpleFencer> = fencers
             .get()
             .into_iter()
             .map(|(_, _, node_refs)| node_refs().expect("the error").value())
+            .map(|fencer_str| SimpleFencer::new(fencer_str))
             .collect();
 
         submit_fencers.update(|val| *val = values);

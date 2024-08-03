@@ -8,20 +8,15 @@ use components::{fencer_list::FencerList, pool_sheet::PoolSheet, result_sheet::P
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (competiors, set_competitors) = create_signal(Vec::<String>::new());
+    let (competiors, set_competitors) = create_signal(Vec::<SimpleFencer>::new());
     let (results, set_results) = create_signal(None::<PoolResults<SimpleFencer>>);
 
     view! {
         <FencerList submit_fencers=set_competitors/>
         {move || {
-            let fencers: Vec<SimpleFencer> = competiors
-                .get()
-                .into_iter()
-                .map(|fencer_str| { SimpleFencer::new(fencer_str) })
-                .collect();
             view! {
                 <PoolSheet
-                    fencers=fencers
+                    fencers=competiors.get()
                     on_complete=move |results| { set_results.set(Some(results)) }
                 />
             }
