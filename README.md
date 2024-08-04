@@ -9,9 +9,13 @@ Install trunk with `cargo install trunk`
 
 Install the wasm target `rustup target add wasm32-unknown-unknown`
 
+Install the nightly toolchain: `rustup toolchain install nightly`
+
+Serve locally: `trunk serve`
+
 More information about leptos here:
 https://book.leptos.dev/getting_started/index.html#hello-world-getting-set-up-for-leptos-csr-development
-For this project, the nightly toolchain is not needed.
+
 
 ## Contributing.
 If you are interested in helping out or have questions, feel free to open a new GitHub issue to discuss.
