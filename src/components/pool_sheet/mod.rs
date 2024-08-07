@@ -1,7 +1,7 @@
 use fencing_sport_lib::{
     bout::FencerVs,
     fencer::SimpleFencer,
-    pools::{bout_creation::SimpleBoutsCreator, PoolResults, PoolSheet},
+    pools::{bout_creation::SimpleBoutsCreator, PoolResults, PoolSheet, PoolSheetError},
 };
 
 use leptos::*;
@@ -17,7 +17,7 @@ use sheet_table::PoolSheetTable;
 #[component]
 pub fn PoolSheet<F>(fencers: Vec<SimpleFencer>, on_complete: F) -> impl IntoView
 where
-    F: Fn(PoolResults<SimpleFencer>) + 'static,
+    F: Fn(Result<PoolResults<SimpleFencer>, PoolSheetError>) + 'static,
 {
     let option_poolsheet = PoolSheet::new(fencers, &SimpleBoutsCreator);
 
@@ -62,13 +62,7 @@ where
                 <PoolSheetTable fencers=get_fencers poolsheet_sigs=poolsheet_signals/>
                 <BoutList versus=get_versus() poolsheet_sigs=poolsheet_signals/>
                 <button on:click=move |_| {
-                    poolsheet_signals
-                        .0
-                        .with(|sheet| {
-                            if sheet.is_finished() {
-                                on_complete(sheet.finish().unwrap())
-                            }
-                        });
+                    poolsheet_signals.0.with(|sheet| { on_complete(sheet.finish()) });
                 }>Get Results</button>
             }
             .into_view()
