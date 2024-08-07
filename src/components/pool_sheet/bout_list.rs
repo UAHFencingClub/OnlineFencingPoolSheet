@@ -1,9 +1,11 @@
+use std::rc::Rc;
+
 use ev::Event;
 use fencing_sport_lib::{
     bout::FencerScore,
     cards::Cards,
     fencer::{Fencer, SimpleFencer},
-    pools::{PoolSheetFencerScore, PoolSheetVersus},
+    pools::{PoolSheet, PoolSheetFencerScore, PoolSheetVersus},
 };
 
 use leptos::*;
@@ -12,17 +14,13 @@ use log::info;
 const POOL_MAX_SCORE: u8 = 5;
 
 #[component]
-pub fn BoutList<FS, FG>(
+pub fn BoutList(
     versus: Vec<PoolSheetVersus<SimpleFencer>>,
-    set_score_closure: FS,
-    get_score_closure: FG,
-) -> impl IntoView
-where
-    FS: Fn(PoolSheetFencerScore<SimpleFencer>, PoolSheetFencerScore<SimpleFencer>)
-        + Clone
-        + 'static,
-    FG: Fn(PoolSheetVersus<SimpleFencer>) -> Option<(u8, u8)> + Clone + 'static,
-{
+    poolsheet_sigs: (
+        ReadSignal<PoolSheet<SimpleFencer>>,
+        WriteSignal<PoolSheet<SimpleFencer>>,
+    ),
+) -> impl IntoView {
     info!("Rendering BoutList");
 
     view! {
@@ -30,17 +28,13 @@ where
             {versus
                 .into_iter()
                 .map(|vs| {
-                    let local_vs = vs.clone();
-                    let get_score_closure_local = get_score_closure.clone();
-                    let get_my_score = move || { get_score_closure_local(local_vs.clone()) };
                     view! {
+                        // let local_vs = vs.clone();
+                        // let get_score_closure_local = get_score_closure.clone();
+                        // let get_my_score = move || { get_score_closure_local(local_vs.clone()) };
                         <li>
                             <div>{vs.0.get_fullname()} vs. {vs.1.get_fullname()}</div>
-                            <BoutListInputItem
-                                versus=vs.clone()
-                                set_sheet_score=set_score_closure.clone()
-                                get_sheet_score=get_my_score.clone()
-                            />
+                            <BoutListInputItem versus=vs.clone() poolsheet_sigs=poolsheet_sigs/>
                         </li>
                     }
                 })
@@ -50,74 +44,118 @@ where
 }
 
 #[component]
-pub fn BoutListInputItem<FG, FS>(
+pub fn BoutListInputItem(
     versus: PoolSheetVersus<SimpleFencer>,
-    set_sheet_score: FG,
-    get_sheet_score: FS,
-) -> impl IntoView
-where
-    FG: Fn(PoolSheetFencerScore<SimpleFencer>, PoolSheetFencerScore<SimpleFencer>)
-        + Clone
-        + 'static,
-    FS: Fn() -> Option<(u8, u8)> + Clone + 'static,
-{
+    poolsheet_sigs: (
+        ReadSignal<PoolSheet<SimpleFencer>>,
+        WriteSignal<PoolSheet<SimpleFencer>>,
+    ),
+) -> impl IntoView {
     info!("Rendering BoutListInputItem");
-    let (score, set_score) = create_signal((None::<u8>, None::<u8>));
+    // let (score, set_score) = create_signal((None::<u8>, None::<u8>));
 
-    let fencer_aa = versus.0.clone();
-    let fencer_ab = versus.1.clone();
-    let fencer_ba = versus.0.clone();
-    let fencer_bb = versus.1.clone();
+    let (read_poolsheet, write_poolsheet) = poolsheet_sigs;
 
-    let set_sheet_score_a = set_sheet_score.clone();
-    let set_sheet_score_b = set_sheet_score.clone();
+    let vs_get = versus.clone();
+    let vs_set = versus.clone();
+    let vs_setp = versus.clone();
 
-    let get_sheet_score_a = get_sheet_score.clone();
-    let get_sheet_score_b = get_sheet_score.clone();
+    let get_score = move |fencer: Rc<SimpleFencer>| {
+        read_poolsheet.with(|sheet| sheet.get_bout(&vs_get.clone()).unwrap().get_score(fencer))
+    };
+
+    let get_score_a = get_score.clone();
+    let get_score_b = get_score.clone();
+
+    let set_score = move |fencer: Rc<SimpleFencer>, score: Option<u8>| {
+        write_poolsheet.update(|sheet| {
+            let bout = sheet.get_bout_mut(&vs_set.clone()).unwrap();
+            match score {
+                Some(score) => {
+                    let score = FencerScore::new(fencer, score, Cards::default());
+                    bout.set_score(score).unwrap();
+                }
+                None => bout.unset_score(fencer).unwrap(),
+            }
+        })
+    };
+
+    let set_priority = move |fencer: Option<Rc<SimpleFencer>>| {
+        write_poolsheet.update(|sheet| {
+            let bout = sheet.get_bout_mut(&vs_setp.clone()).unwrap();
+            bout.set_priority(fencer).unwrap();
+        })
+    };
+
+    let set_scores_a = set_score.clone();
+    let set_scores_b = set_score.clone();
+
+    let set_priority_a = set_priority.clone();
+    let set_priority_b = set_priority.clone();
+
+    let fencer_a1 = versus.0.clone();
+    let fencer_a2 = versus.0.clone();
+    let fencer_a3 = versus.0.clone();
+    let fencer_b1 = versus.1.clone();
+    let fencer_b2 = versus.1.clone();
+    let fencer_b3 = versus.1.clone();
+
+    #[derive(Clone, Copy, PartialEq, Eq)]
+    enum LR {
+        Left,
+        Right,
+        None,
+    }
+
+    let (get_check, set_check) = create_signal(LR::None);
 
     view! {
         <input
-            type="number"
+            type="checkbox"
             on:input=move |ev| {
-                let score_a = parse_score_from_event(&ev);
-                let score_b = score.get().1;
-                set_score((score_a, score_b));
-                info!("A about to set score with {score_a:?} - {score_b:?}");
-                if let Some((a, b)) = score_a.zip(score_b) {
-                    info!("Setting score from A");
-                    let fencer_a = FencerScore::new(fencer_aa.clone(), a, Cards::default());
-                    let fencer_b = FencerScore::new(fencer_ab.clone(), b, Cards::default());
-                    set_sheet_score_a(fencer_a, fencer_b);
+                if event_target_checked(&ev) {
+                    set_check.set(LR::Left);
+                    set_priority_a(Some(fencer_a3.clone()));
                 } else {
-                    let fencer_a = FencerScore::new(fencer_aa.clone(), 0, Cards::default());
-                    let fencer_b = FencerScore::new(fencer_ab.clone(), 0, Cards::default());
-                    set_sheet_score_a(fencer_a, fencer_b);
+                    set_check.set(LR::None);
+                    set_priority_a(None);
                 }
             }
 
-            prop:value=move || { score.get().0 }
+            prop:checked=move || { get_check.get() == LR::Left }
         />
-        " vs. "
         <input
             type="number"
             on:input=move |ev| {
-                let score_b = parse_score_from_event(&ev);
-                let score_a = score.get().0;
-                set_score((score_a, score_b));
-                info!("A about to set score with {score_a:?} - {score_b:?}");
-                if let Some((a, b)) = score_a.zip(score_b) {
-                    info!("Setting score from B");
-                    let fencer_a = FencerScore::new(fencer_ba.clone(), a, Cards::default());
-                    let fencer_b = FencerScore::new(fencer_bb.clone(), b, Cards::default());
-                    set_sheet_score_b(fencer_a, fencer_b);
+                let score = parse_score_from_event(&ev);
+                set_scores_a(fencer_a1.clone(), score)
+            }
+
+            prop:value=move || { get_score_a(fencer_a2.clone()) }
+        />
+        " vs. "
+        <input
+            type="checkbox"
+            on:input=move |ev| {
+                if event_target_checked(&ev) {
+                    set_check.set(LR::Right);
+                    set_priority_b(Some(fencer_b3.clone()));
                 } else {
-                    let fencer_a = FencerScore::new(fencer_ba.clone(), 0, Cards::default());
-                    let fencer_b = FencerScore::new(fencer_bb.clone(), 0, Cards::default());
-                    set_sheet_score_b(fencer_a, fencer_b);
+                    set_check.set(LR::None);
+                    set_priority_b(None);
                 }
             }
 
-            prop:value=move || { score.get().1 }
+            prop:checked=move || { get_check.get() == LR::Right }
+        />
+        <input
+            type="number"
+            on:input=move |ev| {
+                let score = parse_score_from_event(&ev);
+                set_scores_b(fencer_b1.clone(), score)
+            }
+
+            prop:value=move || { get_score_b(fencer_b2.clone()) }
         />
     }
 }

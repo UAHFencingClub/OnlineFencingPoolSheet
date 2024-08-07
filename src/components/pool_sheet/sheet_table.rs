@@ -1,13 +1,22 @@
-use fencing_sport_lib::fencer::{Fencer, SimpleFencer};
+use fencing_sport_lib::{
+    bout::FencerVs,
+    fencer::{Fencer, SimpleFencer},
+    pools::PoolSheet,
+};
 
 use leptos::*;
 use log::info;
 
 #[component]
-pub fn PoolSheetTable<F, FB>(fencers: F, get_main_score: FB) -> impl IntoView
+pub fn PoolSheetTable<F>(
+    fencers: F,
+    poolsheet_sigs: (
+        ReadSignal<PoolSheet<SimpleFencer>>,
+        WriteSignal<PoolSheet<SimpleFencer>>,
+    ),
+) -> impl IntoView
 where
     F: Fn() -> Vec<SimpleFencer> + Clone + 'static,
-    FB: Fn(SimpleFencer, SimpleFencer) -> Option<u8> + Clone + 'static,
 {
     info!("Rendering PoolSheetTable");
 
@@ -21,7 +30,7 @@ where
                         <PoolTableRow
                             main_fencer=fencer
                             fencers=fencers.clone()
-                            get_main_score=get_main_score.clone()
+                            poolsheet_sigs=poolsheet_sigs
                         />
                     }
                 })
@@ -31,18 +40,26 @@ where
 }
 
 #[component]
-pub fn TableScoreCell<'a, FG>(
+pub fn TableScoreCell<'a>(
     main_fencer: &'a SimpleFencer,
     secondary_fencer: &'a SimpleFencer,
-    get_main_score: FG,
-) -> impl IntoView
-where
-    FG: Fn(SimpleFencer, SimpleFencer) -> Option<u8> + Clone + 'static,
-{
+    poolsheet_sigs: (
+        ReadSignal<PoolSheet<SimpleFencer>>,
+        WriteSignal<PoolSheet<SimpleFencer>>,
+    ),
+) -> impl IntoView {
     info!("Rendering TableScoreCell");
 
     let main_fencer = main_fencer.clone();
     let secondary_fencer = secondary_fencer.clone();
+
+    let get_main_score = move |fencer_main: SimpleFencer, fencer_sec: SimpleFencer| {
+        poolsheet_sigs.0.with(|sheet| {
+            let vs = FencerVs::new(fencer_main.clone(), fencer_sec.clone()).unwrap();
+            let bout = sheet.get_bout(&vs).unwrap();
+            bout.get_score(fencer_main)
+        })
+    };
 
     if main_fencer == secondary_fencer {
         view! { <td class="poolsheet-cell-blank"></td> }
@@ -80,14 +97,16 @@ where
 }
 
 #[component]
-pub fn PoolTableRow<'a, F, FG>(
+pub fn PoolTableRow<'a, F>(
     main_fencer: &'a SimpleFencer,
     fencers: F,
-    get_main_score: FG,
+    poolsheet_sigs: (
+        ReadSignal<PoolSheet<SimpleFencer>>,
+        WriteSignal<PoolSheet<SimpleFencer>>,
+    ),
 ) -> impl IntoView
 where
     F: Fn() -> Vec<SimpleFencer> + Clone + 'static,
-    FG: Fn(SimpleFencer, SimpleFencer) -> Option<u8> + Clone + 'static,
 {
     info!("Rendering PoolTableRow");
     view! {
@@ -100,7 +119,7 @@ where
                         <TableScoreCell
                             main_fencer=&main_fencer
                             secondary_fencer=fencer
-                            get_main_score=get_main_score.clone()
+                            poolsheet_sigs=poolsheet_sigs
                         />
                     }
                 })
