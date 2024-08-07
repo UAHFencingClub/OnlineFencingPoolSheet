@@ -4,21 +4,31 @@ use leptos::*;
 // Modules
 mod components;
 
-use components::{fencer_list::FencerList, pool_sheet::PoolSheet, result_sheet::PoolResultTable};
+use components::{
+    fencer_list::{FencerList, FencerListError},
+    pool_sheet::PoolSheet,
+    result_sheet::PoolResultTable,
+};
+use leptos_dom::Text;
 
 #[component]
 pub fn App() -> impl IntoView {
-    let (competiors, set_competitors) = create_signal(Vec::<SimpleFencer>::new());
+    let (competiors, set_competitors) = create_signal(Err(FencerListError::NoFencers));
     let (results, set_results) = create_signal(None::<PoolResults<SimpleFencer>>);
 
     view! {
         <FencerList submit_fencers=set_competitors/>
         {move || {
-            view! {
-                <PoolSheet
-                    fencers=competiors.get()
-                    on_complete=move |results| { set_results.set(Some(results)) }
-                />
+            match competiors.get() {
+                Ok(fencers) => {
+                    view! {
+                        <PoolSheet
+                            fencers=fencers
+                            on_complete=move |results| { set_results.set(Some(results)) }
+                        />
+                    }
+                }
+                Err(err) => View::Text(Text::new(Oco::Owned(format!("{err:?}")))),
             }
         }}
 
