@@ -63,8 +63,9 @@ pub fn TableScoreCell<'a>(
 
     let cell_width = 75.0 / (column_count as f32);
     let font_size = cell_width - 1.0;
-    let width_height_style =
-        format!("width: {cell_width:.1}vw; height: {cell_width:.1}vw; font-size: {font_size:.1}vw");
+    let width_height_style = format!(
+        "width: {cell_width:.1}vmin; height: {cell_width:.1}vmin; font-size: {font_size:.1}vmin"
+    );
 
     if main_fencer == secondary_fencer {
         view! { <td class="poolsheet-cell-blank" style=width_height_style></td> }

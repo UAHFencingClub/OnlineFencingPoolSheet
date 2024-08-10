@@ -30,12 +30,12 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: calc(1em + 5vw);
+  /* font-size: calc(1em + 5vw); */
 }
 
 .poolsheet-fencer-second {
   line-height: 1;
-  font-size: calc(1em + 5vw);
+  /* font-size: calc(1em + 5vw); */
   text-align: center;
   vertical-align: middle;
   writing-mode: vertical-rl;
@@ -44,7 +44,7 @@ body {
   border: 2px solid #000;
   box-sizing: border-box;
   overflow: hidden;
-  text-overflow: ellipsis;
+  /* text-overflow: ellipsis; */
 }
 
 /* .bout-list-input{
