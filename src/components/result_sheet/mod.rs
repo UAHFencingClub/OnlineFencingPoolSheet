@@ -7,7 +7,7 @@ use leptos::*;
 #[component]
 pub fn PoolResultTable(pool_results: PoolResults<SimpleFencer>) -> impl IntoView {
     view! {
-        <table>
+        <table class="poolresults-table">
             <tr>
                 <th></th>
                 <th>"Fencer"</th>

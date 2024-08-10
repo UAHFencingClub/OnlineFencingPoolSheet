@@ -1,72 +1,59 @@
-/* --------------------- Open Props ---------------------------
-
-/* the props */
-/* @import "https://unpkg.com/open-props"; */
-
-/* optional imports that use the props */
-/* @import "https://unpkg.com/open-props/normalize.min.css"; */
-/* @import "https://unpkg.com/open-props/buttons.min.css"; */
-
-/* ------------------------------------------------------------ */
-/* .red {
-  color: red;
-}
-
 body {
-  font-family: sans-serif;
+  font-family: Arial, sans-serif;
+}
+
+.poolsheet-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto; /* Allow table layout to adjust based on content */
+}
+
+.poolsheet-cell,
+.poolsheet-cell-blank {
+  width: 20vw; /* Adjust based on your needs */
+  height: 20vw; /* Maintain square aspect ratio */
   text-align: center;
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.buttons {
-  display: flex;
-  justify-content: space-evenly;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  text-align: center;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-p,
-button {
-  margin: var(--size-6);
-}
-
-body > picture,
-button {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-  margin: 2rem;
-} */
-
-table, th, td {
-  border: 1px solid black;
-}
-
-.poolsheet-cell {
-  height: same-as-width
+  vertical-align: middle;
+  font-size: calc(1em + 10vw); /* Responsive font size */
+  line-height: 1;
+  border: 1px solid #000;
+  box-sizing: border-box;
 }
 
 .poolsheet-cell-blank {
-  background-color: black;
+  background-color: #808080; /* Light gray background for blank cells */
 }
 
-.pool-sheet-fencer-second {
-  writing-mode: vertical-rl;
-  width: 1.2em
+.poolsheet-fencer-main {
+  max-width: 30vw; /* Max width is proportional to viewport width */
+  padding: 0.5em;
+  text-align: center;
+  font-weight: bold;
+  border: 1px solid #000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: calc(1em + 5vw); /* Responsive font size */
+}
+
+.poolsheet-fencer-second {
+  /* width: 20vw;  */
+  /* max-height: 0vw; */
+  /* width: 20vw; */
+  line-height: 1;
+  height: 30vw;
+  font-size: calc(1em + 5vw); /* Responsive font size */
+  text-align: center;
+  vertical-align: middle;
+  writing-mode: vertical-rl; /* Vertical text */
+  transform: rotate(180deg); /* Rotate text to read top to bottom */
+  font-weight: bold;
+  border: 1px solid #000;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+button, input[type="submit"], input[type="number"], input[type="checkbox"] {
+  font-size: 1em;
 }

@@ -20,8 +20,13 @@ where
 {
     info!("Rendering PoolSheetTable");
 
+    // let text_height = 100 / (fencers().len() + 2);
+
+    // let table_style_tag = format!("font-size:{text_height}vw");
+    let table_style_tag = "";
+
     view! {
-        <table class="poolsheet-table">
+        <table class="poolsheet-table" style=table_style_tag>
             <PoolTableHeader fencers=fencers.clone()/>
             {fencers()
                 .iter()
@@ -89,7 +94,7 @@ where
             {fencers()
                 .iter()
                 .map(|fencer| {
-                    view! { <td class="pool-sheet-fencer-second">{fencer.get_fullname()}</td> }
+                    view! { <td class="poolsheet-fencer-second">{fencer.get_fullname()}</td> }
                 })
                 .collect::<Vec<_>>()}
         </tr>
@@ -111,7 +116,7 @@ where
     info!("Rendering PoolTableRow");
     view! {
         <tr>
-            <td>{main_fencer.get_fullname()}</td>
+            <td class="poolsheet-fencer-main">{main_fencer.get_fullname()}</td>
             {fencers()
                 .iter()
                 .map(|fencer| {
