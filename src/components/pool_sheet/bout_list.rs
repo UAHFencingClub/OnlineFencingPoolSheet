@@ -112,6 +112,7 @@ pub fn BoutListInputItem(
     view! {
         <input
             type="checkbox"
+            class="bout-list-check"
             on:input=move |ev| {
                 if event_target_checked(&ev) {
                     set_check.set(LR::Left);
@@ -126,6 +127,7 @@ pub fn BoutListInputItem(
         />
         <input
             type="number"
+            class="bout-list-input"
             on:input=move |ev| {
                 let score = parse_score_from_event(&ev);
                 set_scores_a(fencer_a1.clone(), score)
@@ -136,6 +138,7 @@ pub fn BoutListInputItem(
         " vs. "
         <input
             type="checkbox"
+            class="bout-list-check"
             on:input=move |ev| {
                 if event_target_checked(&ev) {
                     set_check.set(LR::Right);
@@ -150,6 +153,7 @@ pub fn BoutListInputItem(
         />
         <input
             type="number"
+            class="bout-list-input"
             on:input=move |ev| {
                 let score = parse_score_from_event(&ev);
                 set_scores_b(fencer_b1.clone(), score)

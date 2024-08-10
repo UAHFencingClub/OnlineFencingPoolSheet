@@ -19,14 +19,8 @@ where
     F: Fn() -> Vec<SimpleFencer> + Clone + 'static,
 {
     info!("Rendering PoolSheetTable");
-
-    // let text_height = 100 / (fencers().len() + 2);
-
-    // let table_style_tag = format!("font-size:{text_height}vw");
-    let table_style_tag = "";
-
     view! {
-        <table class="poolsheet-table" style=table_style_tag>
+        <table class="poolsheet-table">
             <PoolTableHeader fencers=fencers.clone()/>
             {fencers()
                 .iter()
@@ -52,6 +46,7 @@ pub fn TableScoreCell<'a>(
         ReadSignal<PoolSheet<SimpleFencer>>,
         WriteSignal<PoolSheet<SimpleFencer>>,
     ),
+    column_count: usize,
 ) -> impl IntoView {
     info!("Rendering TableScoreCell");
 
@@ -66,8 +61,13 @@ pub fn TableScoreCell<'a>(
         })
     };
 
+    let cell_width = 75.0 / (column_count as f32);
+    let font_size = cell_width - 1.0;
+    let width_height_style =
+        format!("width: {cell_width:.1}vw; height: {cell_width:.1}vw; font-size: {font_size:.1}vw");
+
     if main_fencer == secondary_fencer {
-        view! { <td class="poolsheet-cell-blank"></td> }
+        view! { <td class="poolsheet-cell-blank" style=width_height_style></td> }
     } else {
         let get_my_score = move || {
             let tmp = match get_main_score(main_fencer.clone(), secondary_fencer.clone()) {
@@ -77,7 +77,11 @@ pub fn TableScoreCell<'a>(
             info!("Getting score for {main_fencer:?} - {secondary_fencer:?} = {tmp:?}");
             tmp
         };
-        view! { <td class="poolsheet-cell">{get_my_score}</td> }
+        view! {
+            <td class="poolsheet-cell" style=width_height_style>
+                {get_my_score}
+            </td>
+        }
     }
 }
 
@@ -114,6 +118,7 @@ where
     F: Fn() -> Vec<SimpleFencer> + Clone + 'static,
 {
     info!("Rendering PoolTableRow");
+    let len = fencers().len();
     view! {
         <tr>
             <td class="poolsheet-fencer-main">{main_fencer.get_fullname()}</td>
@@ -125,6 +130,7 @@ where
                             main_fencer=&main_fencer
                             secondary_fencer=fencer
                             poolsheet_sigs=poolsheet_sigs
+                            column_count=len
                         />
                     }
                 })

@@ -3,57 +3,50 @@ body {
 }
 
 .poolsheet-table {
-  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
   border-collapse: collapse;
-  table-layout: auto; /* Allow table layout to adjust based on content */
+  table-layout: auto;
 }
 
 .poolsheet-cell,
 .poolsheet-cell-blank {
-  width: 20vw; /* Adjust based on your needs */
-  height: 20vw; /* Maintain square aspect ratio */
   text-align: center;
   vertical-align: middle;
-  font-size: calc(1em + 10vw); /* Responsive font size */
   line-height: 1;
-  border: 1px solid #000;
+  border: 2px solid #000;
   box-sizing: border-box;
 }
 
 .poolsheet-cell-blank {
-  background-color: #808080; /* Light gray background for blank cells */
+  background-color: #808080;
 }
 
 .poolsheet-fencer-main {
-  max-width: 30vw; /* Max width is proportional to viewport width */
-  padding: 0.5em;
+  max-width: 6cm;
   text-align: center;
   font-weight: bold;
-  border: 1px solid #000;
+  border: 2px solid #000;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: calc(1em + 5vw); /* Responsive font size */
+  font-size: calc(1em + 5vw);
 }
 
 .poolsheet-fencer-second {
-  /* width: 20vw;  */
-  /* max-height: 0vw; */
-  /* width: 20vw; */
   line-height: 1;
-  height: 30vw;
-  font-size: calc(1em + 5vw); /* Responsive font size */
+  font-size: calc(1em + 5vw);
   text-align: center;
   vertical-align: middle;
-  writing-mode: vertical-rl; /* Vertical text */
-  transform: rotate(180deg); /* Rotate text to read top to bottom */
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
   font-weight: bold;
-  border: 1px solid #000;
+  border: 2px solid #000;
   box-sizing: border-box;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-button, input[type="submit"], input[type="number"], input[type="checkbox"] {
-  font-size: 1em;
-}
+/* .bout-list-input{
+  width: 3em;
+} */
