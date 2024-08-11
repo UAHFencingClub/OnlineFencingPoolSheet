@@ -27,11 +27,14 @@ pub fn App() -> impl IntoView {
             match competiors.get() {
                 Ok(fencers) => {
                     view! {
-                        <PoolSheet
-                            fencers=fencers
-                            on_complete=move |results| { set_results.set(results) }
-                        />
+                        <div class="poolsheet-container">
+                            <PoolSheet
+                                fencers=fencers
+                                on_complete=move |results| { set_results.set(results) }
+                            />
+                        </div>
                     }
+                        .into_view()
                 }
                 Err(err) => view! { <p>{format!("{err:?}")}</p> }.into_view(),
             }

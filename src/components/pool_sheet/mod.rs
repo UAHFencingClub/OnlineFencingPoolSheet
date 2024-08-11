@@ -59,11 +59,22 @@ where
             };
             // let versus = get_versus();
             view! {
-                <PoolSheetTable fencers=get_fencers poolsheet_sigs=poolsheet_signals/>
-                <BoutList versus=get_versus() poolsheet_sigs=poolsheet_signals/>
-                <button on:click=move |_| {
-                    poolsheet_signals.0.with(|sheet| { on_complete(sheet.finish()) });
-                }>Get Results</button>
+                <div class="poolsheet-table-div">
+                    <PoolSheetTable fencers=get_fencers poolsheet_sigs=poolsheet_signals/>
+                </div>
+                <div class="poolsheet-bouts-div">
+                    <BoutList versus=get_versus() poolsheet_sigs=poolsheet_signals/>
+
+                    <button
+                        id="get-poolsheets-results"
+                        on:click=move |_| {
+                            poolsheet_signals.0.with(|sheet| { on_complete(sheet.finish()) });
+                        }
+                    >
+
+                        Get Results
+                    </button>
+                </div>
             }
             .into_view()
         }

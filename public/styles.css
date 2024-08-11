@@ -1,3 +1,5 @@
+/* This CSS is written with assitance from generative AI*/
+
 body {
   font-family: Arial, sans-serif;
 }
@@ -63,4 +65,29 @@ body {
 .bout-list-check {
   width: 1.5rem; /* Set a fixed width for checkboxes */
   height: 1.5rem; /* Ensure checkboxes are square */
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+.poolsheet-container {
+  display: flex;
+  flex-direction: column; /* Default to column layout for mobile */
+  gap: 1rem; /* Add some space between the table and bout list */
+}
+
+.poolsheet-table-div {
+  flex: 1; /* Allow the table div to grow and take available space */
+}
+
+.poolsheet-bouts-div {
+  flex: 1; /* Allow the bout list div to grow and take available space */
+}
+
+/* Media query for desktop view */
+@media (min-width: 768px) {
+  .poolsheet-container {
+    flex-direction: row; /* Change to row layout on desktop */
+  }
 }
