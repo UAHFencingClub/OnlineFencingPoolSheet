@@ -290,6 +290,7 @@ dependencies = [
  "console_error_panic_hook",
  "console_log",
  "fencing-sport-lib",
+ "indexmap",
  "itertools 0.13.0",
  "leptos",
  "leptos_meta",
@@ -305,7 +306,7 @@ dependencies = [
 [[package]]
 name = "fencing-sport-lib"
 version = "0.1.0"
-source = "git+https://github.com/UAHFencingClub/fencing-sport-lib.git#54b3a148cbc07b602c2e089a5654ebdf8b18e2e8"
+source = "git+https://github.com/UAHFencingClub/fencing-sport-lib.git#4c69204c0860ac0a0b6ecf3095375182bd527ab0"
 dependencies = [
  "derive-getters",
  "email_address",
@@ -530,9 +531,9 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
-version = "2.2.6"
+version = "2.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "168fb715dda47215e360912c096649d23d58bf392ac62f73919e831745e40f26"
+checksum = "de3fc2e30ba82dd1b3911c8de1ffc143c74a914a14e99514d7637e3099df5ea0"
 dependencies = [
  "equivalent",
  "hashbrown",

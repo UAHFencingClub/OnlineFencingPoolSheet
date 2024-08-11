@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 
 use fencing_sport_lib::fencer::SimpleFencer;
+use indexmap::IndexSet;
 use leptos::*;
 
 #[derive(Debug, Clone, Copy)]
@@ -11,7 +12,7 @@ pub enum FencerListError {
 
 #[component]
 pub fn FencerList(
-    submit_fencers: WriteSignal<Result<Vec<SimpleFencer>, FencerListError>>,
+    submit_fencers: WriteSignal<Result<IndexSet<SimpleFencer>, FencerListError>>,
 ) -> impl IntoView {
     let initial_fencers = Vec::new();
 
@@ -36,22 +37,24 @@ pub fn FencerList(
             .map(SimpleFencer::new)
             .collect();
 
-        let mut set = HashSet::new();
-        for fencer in values.iter() {
-            if !set.insert(fencer.clone()) {
+        let mut set = IndexSet::new();
+        for fencer in values {
+            if !set.insert(fencer) {
                 submit_fencers.update(|val| *val = Err(FencerListError::DuplicateFencer));
                 return;
             }
         }
 
         if set.is_empty() {
-            submit_fencers.update(|val: &mut Result<Vec<SimpleFencer>, FencerListError>| {
-                *val = Err(FencerListError::NoFencers)
-            });
+            submit_fencers.update(
+                |val: &mut Result<IndexSet<SimpleFencer>, FencerListError>| {
+                    *val = Err(FencerListError::NoFencers)
+                },
+            );
             return;
         }
 
-        submit_fencers.update(|val| *val = Ok(values));
+        submit_fencers.update(|val| *val = Ok(set));
     };
 
     view! {
