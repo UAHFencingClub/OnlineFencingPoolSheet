@@ -47,6 +47,6 @@ body {
   /* text-overflow: ellipsis; */
 }
 
-/* .bout-list-input{
-  width: 3em;
-} */
+.bout-list-input{
+  width: 3rem;
+}
