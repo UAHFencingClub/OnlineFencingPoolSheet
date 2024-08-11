@@ -47,6 +47,20 @@ body {
   /* text-overflow: ellipsis; */
 }
 
-.bout-list-input{
-  width: 3rem;
+.bout-list-input,
+.bout-list-check {
+  width: 3rem; /* Set a fixed width for number inputs */
+  margin: 0; /* Remove default margins */
+  padding: 0.25rem; /* Add some padding for better alignment */
+}
+
+.bout-list-inputs {
+  display: flex;
+  align-items: center; /* Center the items vertically */
+  gap: 0.5rem; /* Add space between items */
+}
+
+.bout-list-check {
+  width: 1.5rem; /* Set a fixed width for checkboxes */
+  height: 1.5rem; /* Ensure checkboxes are square */
 }
