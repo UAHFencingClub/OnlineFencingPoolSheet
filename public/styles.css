@@ -30,12 +30,12 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  /* font-size: calc(1em + 5vw); */
+  font-size: 3rem;
 }
 
 .poolsheet-fencer-second {
   line-height: 1;
-  /* font-size: calc(1em + 5vw); */
+  font-size: 3rem;
   text-align: center;
   vertical-align: middle;
   writing-mode: vertical-rl;
