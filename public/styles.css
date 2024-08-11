@@ -86,7 +86,7 @@ body {
 }
 
 /* Media query for desktop view */
-@media (min-width: 768px) {
+@media (min-aspect-ratio: 1/1) {
   .poolsheet-container {
     flex-direction: row; /* Change to row layout on desktop */
   }
