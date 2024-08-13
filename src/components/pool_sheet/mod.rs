@@ -13,9 +13,10 @@ mod sheet_table;
 use leptos_dom::Text;
 use log::info;
 use sheet_table::PoolSheetTable;
+use indexmap::IndexSet;
 
 #[component]
-pub fn PoolSheet<F>(fencers: Vec<SimpleFencer>, on_complete: F) -> impl IntoView
+pub fn PoolSheet<F>(fencers: IndexSet<SimpleFencer>, on_complete: F) -> impl IntoView
 where
     F: Fn(Result<PoolResults<SimpleFencer>, PoolSheetError>) + 'static,
 {
