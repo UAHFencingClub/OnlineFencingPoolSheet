@@ -1,10 +1,26 @@
 <!DOCTYPE html>
 <html>
+  <script>
+    // copied from https://www.w3schools.com/w3css/w3css_tabulators.asp
+    function openCity(section_name) {
+      var i;
+      var x = document.getElementsByClassName("section-tab");
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";  
+      }
+      document.getElementById(section_name).style.display = "block";  
+    }
+    </script>
   <head>
     <title>Fencing Pool Sheet</title>
     <meta name="description" content="A work in progress web application to serve as an online pool sheet for fencing.">
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-     <div id="main_tab">
+    <div>
+      <button onclick="openCity('main-container')">Main</button>
+      <button onclick="openCity('poolsheet-container')">Poolsheet</button>
+      <button onclick="openCity('results-container')">Poolresults</button>
+    </div> 
+     <div id="main-container" class="section-tab">
     <h1>Online Fencing Pool Sheet</h1>
     <h2>About</h2>
     <p>

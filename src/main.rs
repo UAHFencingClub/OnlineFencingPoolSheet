@@ -34,29 +34,32 @@ fn main() {
 
     mount_to_body(move || {
         view! {
-            {move || {
-                match competiors.get() {
-                    Ok(fencers) => {
-                        view! {
-                            <div class="poolsheet-container">
+            <div id="poolsheet-container" style="display:none" class="section-tab">
+                {move || {
+                    match competiors.get() {
+                        Ok(fencers) => {
+                            view! {
                                 <PoolSheet
                                     fencers=fencers
                                     on_complete=move |results| { set_results.set(results) }
                                 />
-                            </div>
+                            }
+                                .into_view()
                         }
-                            .into_view()
+                        Err(err) => view! { <p>{format!("{err:?}")}</p> }.into_view(),
                     }
-                    Err(err) => view! { <p>{format!("{err:?}")}</p> }.into_view(),
-                }
-            }}
+                }}
 
-            {move || {
-                match results.get() {
-                    Ok(results) => view! { <PoolResultTable pool_results=results/> }.into_view(),
-                    Err(err) => view! { <p>{format!("{err:?}")}</p> }.into_view(),
-                }
-            }}
+            </div>
+            <div id="results-container" style="display:none" class="section-tab">
+                {move || {
+                    match results.get() {
+                        Ok(results) => view! { <PoolResultTable pool_results=results/> }.into_view(),
+                        Err(err) => view! { <p>{format!("{err:?}")}</p> }.into_view(),
+                    }
+                }}
+
+            </div>
         }
     })
 }
