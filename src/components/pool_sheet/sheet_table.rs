@@ -1,3 +1,6 @@
+// The PoolTableRow as this warning, but removing the lifetime makes the module error.
+// Unsure why TableScoreCell does not have this issue.
+#![allow(clippy::needless_lifetimes)]
 use fencing_sport_lib::{
     bout::FencerVs,
     fencer::{Fencer, SimpleFencer},

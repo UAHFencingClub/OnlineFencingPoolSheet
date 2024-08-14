@@ -5,7 +5,7 @@ use fencing_sport_lib::{
     bout::FencerScore,
     cards::Cards,
     fencer::{Fencer, SimpleFencer},
-    pools::{PoolSheet, PoolSheetFencerScore, PoolSheetVersus},
+    pools::{PoolSheet, PoolSheetVersus},
 };
 
 use leptos::*;
@@ -29,9 +29,6 @@ pub fn BoutList(
                 .into_iter()
                 .map(|vs| {
                     view! {
-                        // let local_vs = vs.clone();
-                        // let get_score_closure_local = get_score_closure.clone();
-                        // let get_my_score = move || { get_score_closure_local(local_vs.clone()) };
                         <li class="bout-list-item">
                             <div>{vs.0.get_fullname()} vs. {vs.1.get_fullname()}</div>
                             <BoutListInputItem versus=vs.clone() poolsheet_sigs=poolsheet_sigs/>
@@ -52,8 +49,6 @@ pub fn BoutListInputItem(
     ),
 ) -> impl IntoView {
     info!("Rendering BoutListInputItem");
-    // let (score, set_score) = create_signal((None::<u8>, None::<u8>));
-
     let (read_poolsheet, write_poolsheet) = poolsheet_sigs;
 
     let vs_get = versus.clone();

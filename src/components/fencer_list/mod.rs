@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use fencing_sport_lib::fencer::SimpleFencer;
 use indexmap::IndexSet;
 use leptos::*;
