@@ -12,7 +12,6 @@ use components::{
     pool_sheet::PoolSheet,
     result_sheet::PoolResultTable,
 };
-use leptos_dom::Text;
 
 #[component]
 pub fn App() -> impl IntoView {
