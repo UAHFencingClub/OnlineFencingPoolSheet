@@ -34,7 +34,7 @@ fn main() {
 
     mount_to_body(move || {
         view! {
-            <div id="poolsheet-container" style="display:none" class="section-tab">
+            <div id="poolsheet-container" style="" class="section-tab">
                 {move || {
                     match competiors.get() {
                         Ok(fencers) => {
@@ -51,7 +51,7 @@ fn main() {
                 }}
 
             </div>
-            <div id="results-container" style="display:none" class="section-tab">
+            <div id="results-container" style="" class="section-tab">
                 {move || {
                     match results.get() {
                         Ok(results) => view! { <PoolResultTable pool_results=results/> }.into_view(),

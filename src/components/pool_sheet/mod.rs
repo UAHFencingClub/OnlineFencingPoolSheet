@@ -36,10 +36,10 @@ where
             };
 
             view! {
-                <div class="poolsheet-table-div">
+                <div id="poolsheet-table-div">
                     <PoolSheetTable fencers=get_fencers poolsheet_sigs=poolsheet_signals/>
                 </div>
-                <div class="poolsheet-bouts-div">
+                <div id="poolsheet-bouts-div">
                     <BoutList versus=get_versus() poolsheet_sigs=poolsheet_signals/>
 
                     <button

@@ -2,25 +2,26 @@
 <html>
   <script>
     // copied from https://www.w3schools.com/w3css/w3css_tabulators.asp
-    function openCity(section_name) {
-      var i;
-      var x = document.getElementsByClassName("section-tab");
-      for (i = 0; i < x.length; i++) {
-        x[i].style.display = "none";  
-      }
-      document.getElementById(section_name).style.display = "block";  
-    }
+    function openTab(section_name) {
+  var i;
+  var x = document.getElementsByClassName("section-tab");
+  for (i = 0; i < x.length; i++) {
+    x[i].classList.remove('active');
+  }
+  document.getElementById(section_name).classList.add('active');
+}
     </script>
   <head>
     <title>Fencing Pool Sheet</title>
     <meta name="description" content="A work in progress web application to serve as an online pool sheet for fencing.">
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <div>
-      <button onclick="openCity('main-container')">Main</button>
-      <button onclick="openCity('poolsheet-container')">Poolsheet</button>
-      <button onclick="openCity('results-container')">Poolresults</button>
+    <div class="button-container">
+      <button onclick="openTab('main-container')">Main</button>
+      <button onclick="openTab('poolsheet-container')">Poolsheet</button>
+      <button onclick="openTab('results-container')">Poolresults</button>
     </div> 
-     <div id="main-container" class="section-tab">
+     <div id="main-container" class="section-tab active">
+      <div id="about-section">
     <h1>Online Fencing Pool Sheet</h1>
     <h2>About</h2>
     <p>
@@ -55,6 +56,7 @@
       I am looking for help with this project, so if you notice any issues or just want to get in contact, you can
       <a href="https://github.com/UAHFencingClub/OnlineFencingPoolSheet/issues/new">open a new issue</a>.
     </p>
+    </div>
     <div id="fencer-list-main-div"></div>
   </div>
     <!-- Add a plain CSS file: see https://trunkrs.dev/assets/#css -->

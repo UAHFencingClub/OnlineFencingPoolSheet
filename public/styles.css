@@ -1,14 +1,57 @@
-/* This CSS is written with assitance from generative AI*/
+/* Section tab container */
+.section-tab-container {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Full viewport height */
+}
 
-body {
-  font-family: Arial, sans-serif;
+/* Button container positioned on top of content */
+.button-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000; /* High z-index to ensure it stays on top */
+  background-color: #fff; /* Optional: Provide a background */
+  padding: 10px;
+}
+
+button {
+  margin-right: 10px;
+}
+
+/* Sections */
+.section-tab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0.5s ease;
+}
+
+.section-tab.active {
+  opacity: 1;
+  z-index: 2;
+}
+
+/* Grid Layout */
+.section-tab > div {
+  box-sizing: border-box;
+}
+
+#about-section, #fencer-list-main-div, #poolsheet-table-div, #poolsheet-bouts-div {
+  padding: 20px;
+}
+
+.section-tab {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
 .poolsheet-table {
-  margin-left: auto;
-  margin-right: auto;
   border-collapse: collapse;
-  table-layout: auto;
 }
 
 .poolsheet-cell,
@@ -25,19 +68,18 @@ body {
 }
 
 .poolsheet-fencer-main {
-  max-width: 6cm;
   text-align: center;
   font-weight: bold;
   border: 2px solid #000;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 3rem;
+  /* font-size: 3rem; */
 }
 
 .poolsheet-fencer-second {
   line-height: 1;
-  font-size: 3rem;
+  /* font-size: 3rem; */
   text-align: center;
   vertical-align: middle;
   writing-mode: vertical-rl;
@@ -46,48 +88,5 @@ body {
   border: 2px solid #000;
   box-sizing: border-box;
   overflow: hidden;
-  /* text-overflow: ellipsis; */
-}
-
-.bout-list-input,
-.bout-list-check {
-  width: 3rem; /* Set a fixed width for number inputs */
-  margin: 0; /* Remove default margins */
-  padding: 0.25rem; /* Add some padding for better alignment */
-}
-
-.bout-list-inputs {
-  display: flex;
-  align-items: center; /* Center the items vertically */
-  gap: 0.5rem; /* Add space between items */
-}
-
-.bout-list-check {
-  width: 1.5rem; /* Set a fixed width for checkboxes */
-  height: 1.5rem; /* Ensure checkboxes are square */
-}
-
-body {
-  font-family: Arial, sans-serif;
-}
-
-.poolsheet-container {
-  display: flex;
-  flex-direction: column; /* Default to column layout for mobile */
-  gap: 1rem; /* Add some space between the table and bout list */
-}
-
-.poolsheet-table-div {
-  flex: 1; /* Allow the table div to grow and take available space */
-}
-
-.poolsheet-bouts-div {
-  flex: 1; /* Allow the bout list div to grow and take available space */
-}
-
-/* Media query for desktop view */
-@media (min-aspect-ratio: 1/1) {
-  .poolsheet-container {
-    flex-direction: row; /* Change to row layout on desktop */
-  }
+  text-overflow: ellipsis;
 }
