@@ -41,7 +41,10 @@ button {
   box-sizing: border-box;
 }
 
-#about-section, #fencer-list-main-div, #poolsheet-table-div, #poolsheet-bouts-div {
+#about-section,
+#fencer-list-main-div,
+#poolsheet-table-div,
+#poolsheet-bouts-div {
   padding: 20px;
 }
 
