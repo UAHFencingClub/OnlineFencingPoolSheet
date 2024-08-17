@@ -1,58 +1,3 @@
-/* Section tab container */
-.section-tab-container {
-  position: relative;
-  width: 100%;
-  height: 100vh; /* Full viewport height */
-}
-
-/* Button container positioned on top of content */
-.button-container {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 1000; /* High z-index to ensure it stays on top */
-  background-color: #fff; /* Optional: Provide a background */
-  padding: 10px;
-}
-
-button {
-  margin-right: 10px;
-}
-
-/* Sections */
-.section-tab {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  z-index: 1;
-  transition: opacity 0.5s ease;
-}
-
-.section-tab.active {
-  opacity: 1;
-  z-index: 2;
-}
-
-/* Grid Layout */
-.section-tab > div {
-  box-sizing: border-box;
-}
-
-#about-section,
-#fencer-list-main-div,
-#poolsheet-table-div,
-#poolsheet-bouts-div {
-  padding: 20px;
-}
-
-.section-tab {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
 .poolsheet-table {
   border-collapse: collapse;
 }
@@ -77,12 +22,10 @@ button {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  /* font-size: 3rem; */
 }
 
 .poolsheet-fencer-second {
   line-height: 1;
-  /* font-size: 3rem; */
   text-align: center;
   vertical-align: middle;
   writing-mode: vertical-rl;
