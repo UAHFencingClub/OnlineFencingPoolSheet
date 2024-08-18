@@ -34,31 +34,43 @@ fn main() {
 
     mount_to_body(move || {
         view! {
-            <div id="poolsheet-container" style="" class="section-tab row">
-                {move || {
-                    match competiors.get() {
-                        Ok(fencers) => {
-                            view! {
-                                <PoolSheet
-                                    fencers=fencers
-                                    on_complete=move |results| { set_results.set(results) }
-                                />
+            <div class="container-fluid ">
+                <div id="poolsheet-container" class="tab-pane container fade">
+                    <div class="row">
+
+                        {move || {
+                            match competiors.get() {
+                                Ok(fencers) => {
+                                    view! {
+                                        <PoolSheet
+                                            fencers=fencers
+                                            on_complete=move |results| { set_results.set(results) }
+                                        />
+                                    }
+                                        .into_view()
+                                }
+                                Err(err) => view! { <p>{format!("{err:?}")}</p> }.into_view(),
                             }
-                                .into_view()
-                        }
-                        Err(err) => view! { <p>{format!("{err:?}")}</p> }.into_view(),
-                    }
-                }}
+                        }}
 
+                    </div>
+                </div>
             </div>
-            <div id="results-container" style="" class="section-tab row">
-                {move || {
-                    match results.get() {
-                        Ok(results) => view! { <PoolResultTable pool_results=results/> }.into_view(),
-                        Err(err) => view! { <p>{format!("{err:?}")}</p> }.into_view(),
-                    }
-                }}
+            <div class="container-fluid ">
+                <div id="results-container" style="" class="tab-pane container fade">
+                    <div class="row">
 
+                        {move || {
+                            match results.get() {
+                                Ok(results) => {
+                                    view! { <PoolResultTable pool_results=results/> }.into_view()
+                                }
+                                Err(err) => view! { <p>{format!("{err:?}")}</p> }.into_view(),
+                            }
+                        }}
+
+                    </div>
+                </div>
             </div>
         }
     })
