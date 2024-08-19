@@ -28,16 +28,19 @@ fn main() {
         .get_element_by_id("fencer-list-main-div")
         .expect("Element should exist in the index.html");
 
+    let tab_content_div = doc
+        .get_element_by_id("tab-content-div")
+        .expect("Element should exist in index.html");
+
     mount_to(fencer_main_div.clone().unchecked_into(), move || {
         view! { <FencerList submit_fencers=set_competitors/> }
     });
 
-    mount_to_body(move || {
+    mount_to(tab_content_div.clone().unchecked_into(), move || {
         view! {
-            <div class="container-fluid ">
-                <div id="poolsheet-container" class="tab-pane container fade">
+            <div id="poolsheet-container" class="tab-pane container fade">
+                <div class="container-fluid ">
                     <div class="row">
-
                         {move || {
                             match competiors.get() {
                                 Ok(fencers) => {
@@ -56,10 +59,9 @@ fn main() {
                     </div>
                 </div>
             </div>
-            <div class="container-fluid ">
-                <div id="results-container" style="" class="tab-pane container fade">
+            <div id="results-container" style="" class="tab-pane container fade">
+                <div class="container-fluid ">
                     <div class="row">
-
                         {move || {
                             match results.get() {
                                 Ok(results) => {
