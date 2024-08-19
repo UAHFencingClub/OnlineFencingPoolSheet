@@ -69,7 +69,7 @@ pub fn TableScoreCell<'a>(
     let width_height_style = format!("width: {cell_width:.1}%; height: {cell_width:.1}%;");
 
     if main_fencer == secondary_fencer {
-        view! { <td class="poolsheet-cell-blank" style=width_height_style></td> }
+        view! { <td class="poolsheet-cell-blank ratio ratio-1x1" style=width_height_style></td> }
     } else {
         let get_my_score = move || {
             let tmp = match get_main_score(main_fencer.clone(), secondary_fencer.clone()) {

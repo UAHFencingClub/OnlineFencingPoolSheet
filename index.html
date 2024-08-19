@@ -16,6 +16,39 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+    <script>
+      function scaleTextToFit() {
+        const divs = document.querySelectorAll(".poolsheet-cell");
+        if (divs.length != 0) {
+          divs.forEach(function (div, a, b) {
+            const parentWidth = div.clientWidth;
+            const parentHeight = div.clientWidth;
+
+            // Set a temporary large font size to measure the content
+            div.style.fontSize = `${Math.min(parentWidth, parentHeight)}px`;
+
+            // Calculate the actual font size based on the container size
+            const divWidth = div.scrollWidth;
+            const divHeight = div.scrollWidth;
+
+            // Adjust font size to fit the container
+            const scaleFactor = Math.min(
+              parentWidth / divWidth,
+              parentHeight / divHeight
+            );
+
+            div.style.fontSize = `${
+              Math.min(parentWidth, parentHeight) * scaleFactor
+            }px`;
+          });
+        }
+      }
+
+      // Call the function on window load and resize
+      window.addEventListener("load", scaleTextToFit);
+      window.addEventListener("resize", scaleTextToFit);
+    </script>
+
     <!--Stuff for Trunk-->
     <link data-trunk rel="css" rel="stylesheet" href="public/styles.css" />
     <link data-trunk rel="icon" href="public/favicon.ico" />
