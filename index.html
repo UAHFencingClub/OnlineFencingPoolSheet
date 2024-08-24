@@ -1,51 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>Fencing Pool Sheet</title>
-    <meta name="description" content="A work in progress web application to serve as an online pool sheet for fencing.">
-    <h1>Online Fencing Pool Sheet</h1>
-    <h2>About</h2>
-    <p>
-      This is a work in progress poolsheet to organize fencing pools.
-      Currently, I have used the following 
-      <a href="https://cdn1.sportngin.com/attachments/document/2857-1927901/Pool_Score_Sheet.pdf">poolsheet provided by USA Fencing</a>
-      as a model for creating this one.
-      And it will follow the bout orders defined <a href="https://cdn1.sportngin.com/attachments/document/0034/5494/bout_order.pdf">here</a>
-      (though I do not support setting fencers as teammates right now).
-    </p>
-    <p>
-      The source for this page can be found here: <a href="https://github.com/UAHFencingClub/OnlineFencingPoolSheet">Online Fencing Pool Sheet</a>,
-      and the supporting library for it can be found here: <a href="https://github.com/UAHFencingClub/fencing-sport-lib">fencing-sport-lib</a>.
-    </p>
-    <h2>Usage</h2>
-    <p>
-      To get started you can click "Add Fencer" and type in a name to create a new fencer to add to the poolsheet.
-      You must have 4-12 fencers for a poolsheet to be created by pressing the "Submit" button (Otherwise you will get the "UnsupportedParticipantCount" Error).
-      If you want to define your own bout order, you can open an issue or pull request in the "fencing-sport-lib" library linked above, and I can explain how.
-    </p>
-    <p>
-      You can enter in scores in the number fields, and the checkboxes are used to select <em>priority</em> (not the winner).
-      The winner is calculated based on the entered score and who has the priority box checked.
-    </p>
-    <p>
-      Clicking "Get Results" will do the calculations for wins, touches scored, touches recieved, and the touch indicator.
-      I have a placeholder for displaying place, but it is not used yet.
-      For now, just rely on the order the fencers are displayed in.
-    </p>
-    <h2>Other</h2>
-    <p>
-      I am looking for help with this project, so if you notice any issues or just want to get in contact, you can
-      <a href="https://github.com/UAHFencingClub/OnlineFencingPoolSheet/issues/new">open a new issue</a>.
-    </p>
-    <!-- Add a plain CSS file: see https://trunkrs.dev/assets/#css -->
-    <!-- If using Tailwind with Leptos CSR, see https://trunkrs.dev/assets/#tailwind instead-->
+    <meta
+      name="description"
+      content="A work in progress web application to serve as an online pool sheet for fencing."
+    />
+
+    <!--Stuff for Bootstrap-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!--Stuff for Trunk-->
     <link data-trunk rel="css" rel="stylesheet" href="public/styles.css" />
-
-    <!-- Include favicon in dist output: see https://trunkrs.dev/assets/#icon -->
     <link data-trunk rel="icon" href="public/favicon.ico" />
-
     <!-- include support for `wasm-bindgen --weak-refs` - see: https://rustwasm.github.io/docs/wasm-bindgen/reference/weak-references.html -->
     <link data-trunk rel="rust" data-wasm-opt="z" data-weak-refs />
   </head>
-  <body></body>
+
+  <body>
+    <div id="tab-content-div" class="container-fluid">
+      <div class="row mb-2">
+        <div id="about-section" class="col-sm-6">
+          <h1>Online Fencing Pool Sheet</h1>
+          <h2>About</h2>
+          <p>
+            This is a work in progress poolsheet to organize fencing pools.
+            Currently, I have used the following
+            <a
+              href="https://cdn1.sportngin.com/attachments/document/2857-1927901/Pool_Score_Sheet.pdf"
+              >poolsheet provided by USA Fencing</a
+            >
+            as a model for creating this one. And it will follow the bout orders
+            defined
+            <a
+              href="https://cdn1.sportngin.com/attachments/document/0034/5494/bout_order.pdf"
+              >here</a
+            >
+            (though I do not support setting fencers as teammates right now).
+          </p>
+          <p>
+            The source for this page can be found here:
+            <a href="https://github.com/UAHFencingClub/OnlineFencingPoolSheet"
+              >Online Fencing Pool Sheet</a
+            >, and the supporting library for it can be found here:
+            <a href="https://github.com/UAHFencingClub/fencing-sport-lib"
+              >fencing-sport-lib</a
+            >.
+          </p>
+          <h2>Usage</h2>
+          <p>
+            To get started you can click "Add Fencer" and type in a name to
+            create a new fencer to add to the poolsheet. You must have 4-12
+            fencers for a poolsheet to be created by pressing the "Submit"
+            button (Otherwise you will get the "UnsupportedParticipantCount"
+            Error). If you want to define your own bout order, you can open an
+            issue or pull request in the "fencing-sport-lib" library linked
+            above, and I can explain how.
+          </p>
+          <p>
+            You can enter in scores in the number fields, and the checkboxes are
+            used to select <em>priority</em> (not the winner). The winner is
+            calculated based on the entered score and who has the priority box
+            checked.
+          </p>
+          <p>
+            Clicking "Get Results" will do the calculations for wins, touches
+            scored, touches recieved, and the touch indicator. I have a
+            placeholder for displaying place, but it is not used yet. For now,
+            just rely on the order the fencers are displayed in.
+          </p>
+          <h2>Other</h2>
+          <p>
+            I am looking for help with this project, so if you notice any issues
+            or just want to get in contact, you can
+            <a
+              href="https://github.com/UAHFencingClub/OnlineFencingPoolSheet/issues/new"
+              >open a new issue</a
+            >.
+          </p>
+        </div>
+        <div id="fencer-list-main-div" class="col-sm-6"></div>
+      </div>
+    </div>
+  </body>
 </html>

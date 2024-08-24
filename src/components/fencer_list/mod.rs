@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use fencing_sport_lib::fencer::SimpleFencer;
 use indexmap::IndexSet;
 use leptos::*;
@@ -94,7 +92,7 @@ pub fn FencerList(
                     />
 
                 </ul>
-                <input type="submit" value="Submit"/>
+                <button type="submit">Submit</button>
             </form>
         </div>
     }

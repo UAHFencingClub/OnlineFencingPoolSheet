@@ -1,3 +1,6 @@
+// The PoolTableRow as this warning, but removing the lifetime makes the module error.
+// Unsure why TableScoreCell does not have this issue.
+#![allow(clippy::needless_lifetimes)]
 use fencing_sport_lib::{
     bout::FencerVs,
     fencer::{Fencer, SimpleFencer},
@@ -5,6 +8,7 @@ use fencing_sport_lib::{
 };
 
 use leptos::*;
+use leptos_use::{use_element_size, UseElementSizeReturn};
 use log::info;
 
 #[component]
@@ -19,7 +23,6 @@ where
     F: Fn() -> Vec<SimpleFencer> + Clone + 'static,
 {
     info!("Rendering PoolSheetTable");
-
     view! {
         <table class="poolsheet-table">
             <PoolTableHeader fencers=fencers.clone()/>
@@ -47,6 +50,7 @@ pub fn TableScoreCell<'a>(
         ReadSignal<PoolSheet<SimpleFencer>>,
         WriteSignal<PoolSheet<SimpleFencer>>,
     ),
+    column_count: usize,
 ) -> impl IntoView {
     info!("Rendering TableScoreCell");
 
@@ -61,8 +65,25 @@ pub fn TableScoreCell<'a>(
         })
     };
 
+    let cell_width = 100.0 / (column_count as f32);
+    let width_height_style = format!("width: {cell_width:.1}%; height: {cell_width:.1}%;");
+
+    let td_noderef = create_node_ref();
+    let span_noderef = create_node_ref();
+
+    let UseElementSizeReturn {
+        width: _width,
+        height,
+    } = use_element_size(td_noderef);
+
+    let get_span_style = move || {
+        let height_rounded = height() as usize;
+        info!("Test {height_rounded}");
+        format!("width: 100%; font-size: {height_rounded}px")
+    };
+
     if main_fencer == secondary_fencer {
-        view! { <td class="poolsheet-cell-blank"></td> }
+        view! { <td class="poolsheet-cell-blank ratio ratio-1x1" style=width_height_style></td> }
     } else {
         let get_my_score = move || {
             let tmp = match get_main_score(main_fencer.clone(), secondary_fencer.clone()) {
@@ -72,7 +93,17 @@ pub fn TableScoreCell<'a>(
             info!("Getting score for {main_fencer:?} - {secondary_fencer:?} = {tmp:?}");
             tmp
         };
-        view! { <td class="poolsheet-cell">{get_my_score}</td> }
+        view! {
+            <td
+                class="poolsheet-cell  ratio ratio-1x1"
+                style=width_height_style
+                node_ref=td_noderef
+            >
+                <span class="poolsheet-cell-text" style=get_span_style node_ref=span_noderef>
+                    {get_my_score}
+                </span>
+            </td>
+        }
     }
 }
 
@@ -89,7 +120,7 @@ where
             {fencers()
                 .iter()
                 .map(|fencer| {
-                    view! { <td class="pool-sheet-fencer-second">{fencer.get_fullname()}</td> }
+                    view! { <td class="poolsheet-fencer-second">{fencer.get_fullname()}</td> }
                 })
                 .collect::<Vec<_>>()}
         </tr>
@@ -109,9 +140,10 @@ where
     F: Fn() -> Vec<SimpleFencer> + Clone + 'static,
 {
     info!("Rendering PoolTableRow");
+    let len = fencers().len();
     view! {
         <tr>
-            <td>{main_fencer.get_fullname()}</td>
+            <td class="poolsheet-fencer-main">{main_fencer.get_fullname()}</td>
             {fencers()
                 .iter()
                 .map(|fencer| {
@@ -120,6 +152,7 @@ where
                             main_fencer=&main_fencer
                             secondary_fencer=fencer
                             poolsheet_sigs=poolsheet_sigs
+                            column_count=len
                         />
                     }
                 })
