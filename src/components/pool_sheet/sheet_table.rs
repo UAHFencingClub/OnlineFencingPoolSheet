@@ -80,8 +80,10 @@ pub fn TableScoreCell<'a>(
             tmp
         };
         view! {
-            <td class="poolsheet-cell" style=width_height_style>
-                {get_my_score}
+            <td class="poolsheet-cell  ratio ratio-1x1" style=width_height_style>
+                <span class="poolsheet-cell-text" style="width: 100%">
+                    {get_my_score}
+                </span>
             </td>
         }
     }

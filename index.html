@@ -21,25 +21,14 @@
         const divs = document.querySelectorAll(".poolsheet-cell");
         if (divs.length != 0) {
           divs.forEach(function (div, a, b) {
-            const parentWidth = div.clientWidth;
+            let span = div.querySelector(".poolsheet-cell-text");
             const parentHeight = div.clientWidth;
+            const padding = Math.floor(0.5 * parentHeight);
+            console.log(padding, parentHeight);
 
             // Set a temporary large font size to measure the content
-            div.style.fontSize = `${Math.min(parentWidth, parentHeight)}px`;
-
-            // Calculate the actual font size based on the container size
-            const divWidth = div.scrollWidth;
-            const divHeight = div.scrollWidth;
-
-            // Adjust font size to fit the container
-            const scaleFactor = Math.min(
-              parentWidth / divWidth,
-              parentHeight / divHeight
-            );
-
-            div.style.fontSize = `${
-              Math.min(parentWidth, parentHeight) * scaleFactor
-            }px`;
+            span.style.fontSize = `${parentHeight - padding}px`;
+            // div.style.padding = `0px`;
           });
         }
       }
