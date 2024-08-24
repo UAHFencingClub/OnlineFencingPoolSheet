@@ -92,7 +92,7 @@ pub fn FencerList(
                     />
 
                 </ul>
-                <input type="submit" value="Submit"/>
+                <button type="submit">Submit</button>
             </form>
         </div>
     }
