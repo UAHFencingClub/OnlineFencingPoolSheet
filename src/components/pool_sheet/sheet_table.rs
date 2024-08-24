@@ -7,10 +7,9 @@ use fencing_sport_lib::{
     pools::PoolSheet,
 };
 
-use html::Div;
 use leptos::*;
 use leptos_use::{use_element_size, UseElementSizeReturn};
-use log::{info, log};
+use log::info;
 
 #[component]
 pub fn PoolSheetTable<F>(
