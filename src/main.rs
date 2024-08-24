@@ -38,7 +38,7 @@ fn main() {
 
     mount_to(tab_content_div.clone().unchecked_into(), move || {
         view! {
-            <div class="row">
+            <div class="row mb-2">
                 {move || {
                     match competiors.get() {
                         Ok(fencers) => {
