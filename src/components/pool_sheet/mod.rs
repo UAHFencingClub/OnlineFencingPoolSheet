@@ -36,11 +36,22 @@ where
             };
 
             view! {
-                <PoolSheetTable fencers=get_fencers poolsheet_sigs=poolsheet_signals/>
-                <BoutList versus=get_versus() poolsheet_sigs=poolsheet_signals/>
-                <button on:click=move |_| {
-                    poolsheet_signals.0.with(|sheet| { on_complete(sheet.finish()) });
-                }>Get Results</button>
+                <div id="poolsheet-table-div" class="col-sm-6">
+                    <PoolSheetTable fencers=get_fencers poolsheet_sigs=poolsheet_signals/>
+                </div>
+                <div id="poolsheet-bouts-div" class="col-sm-6">
+                    <BoutList versus=get_versus() poolsheet_sigs=poolsheet_signals/>
+
+                    <button
+                        id="get-poolsheets-results"
+                        on:click=move |_| {
+                            poolsheet_signals.0.with(|sheet| { on_complete(sheet.finish()) });
+                        }
+                    >
+
+                        Get Results
+                    </button>
+                </div>
             }
             .into_view()
         }
