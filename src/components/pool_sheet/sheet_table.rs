@@ -7,8 +7,10 @@ use fencing_sport_lib::{
     pools::PoolSheet,
 };
 
+use html::Div;
 use leptos::*;
-use log::info;
+use leptos_use::{use_element_size, UseElementSizeReturn};
+use log::{info, log};
 
 #[component]
 pub fn PoolSheetTable<F>(
@@ -65,8 +67,21 @@ pub fn TableScoreCell<'a>(
     };
 
     let cell_width = 100.0 / (column_count as f32);
-    // let font_size = cell_width - 1.0;
     let width_height_style = format!("width: {cell_width:.1}%; height: {cell_width:.1}%;");
+
+    let td_noderef = create_node_ref();
+    let span_noderef = create_node_ref();
+
+    let UseElementSizeReturn {
+        width: _width,
+        height,
+    } = use_element_size(td_noderef);
+
+    let get_span_style = move || {
+        let height_rounded = height() as usize;
+        info!("Test {height_rounded}");
+        format!("width: 100%; font-size: {height_rounded}px")
+    };
 
     if main_fencer == secondary_fencer {
         view! { <td class="poolsheet-cell-blank ratio ratio-1x1" style=width_height_style></td> }
@@ -80,8 +95,12 @@ pub fn TableScoreCell<'a>(
             tmp
         };
         view! {
-            <td class="poolsheet-cell  ratio ratio-1x1" style=width_height_style>
-                <span class="poolsheet-cell-text" style="width: 100%">
+            <td
+                class="poolsheet-cell  ratio ratio-1x1"
+                style=width_height_style
+                node_ref=td_noderef
+            >
+                <span class="poolsheet-cell-text" style=get_span_style node_ref=span_noderef>
                     {get_my_score}
                 </span>
             </td>

@@ -16,28 +16,6 @@
     />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-      function scaleTextToFit() {
-        const divs = document.querySelectorAll(".poolsheet-cell");
-        if (divs.length != 0) {
-          divs.forEach(function (div, a, b) {
-            let span = div.querySelector(".poolsheet-cell-text");
-            const parentHeight = div.clientWidth;
-            const padding = Math.floor(0.1 * parentHeight);
-            console.log(padding, parentHeight);
-
-            // Set a temporary large font size to measure the content
-            span.style.fontSize = `${parentHeight - padding}px`;
-            // div.style.padding = `0px`;
-          });
-        }
-      }
-
-      // Call the function on window load and resize
-      window.addEventListener("load", scaleTextToFit);
-      window.addEventListener("resize", scaleTextToFit);
-    </script>
-
     <!--Stuff for Trunk-->
     <link data-trunk rel="css" rel="stylesheet" href="public/styles.css" />
     <link data-trunk rel="icon" href="public/favicon.ico" />
