@@ -9,10 +9,6 @@
   line-height: 1;
   border: 2px solid #000;
   box-sizing: border-box;
-  /* font-size: clamp(1px, 50px, 200px); */
-  white-space: nowrap;
-  /* overflow: hidden; */
-  /* @include font-size(4rem); */
 }
 
 .poolsheet-cell-blank {
