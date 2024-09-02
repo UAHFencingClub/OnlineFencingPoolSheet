@@ -23,11 +23,14 @@ pub fn BoutList(
 ) -> impl IntoView {
     info!("Rendering BoutList");
 
+    let versus_len = versus.len();
+
     view! {
         <ol>
             {versus
                 .into_iter()
-                .map(|vs| {
+                .enumerate()
+                .map(|(index, vs)| {
                     view! {
                         <li class="bout-list-item container">
                             <BoutListItemLabel
@@ -36,6 +39,11 @@ pub fn BoutList(
                             />
                             <BoutListInputItem versus=vs.clone() poolsheet_sigs=poolsheet_sigs/>
                         </li>
+                        {if index != versus_len - 1 {
+                            view! { <hr/> }.into_view()
+                        } else {
+                            view! {}.into_view()
+                        }}
                     }
                 })
                 .collect::<Vec<_>>()}
