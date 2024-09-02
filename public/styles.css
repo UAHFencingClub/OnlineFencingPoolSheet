@@ -49,3 +49,7 @@
 .poolresults-table > tr > th {
   border: 2px solid #000;
 }
+
+.bout-list-input {
+  width: 3em;
+}

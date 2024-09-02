@@ -29,14 +29,28 @@ pub fn BoutList(
                 .into_iter()
                 .map(|vs| {
                     view! {
-                        <li class="bout-list-item">
-                            <div>{vs.0.get_fullname()} vs. {vs.1.get_fullname()}</div>
+                        <li class="bout-list-item container">
+                            <BoutListItemLabel
+                                versus_0=vs.0.get_fullname()
+                                versus_1=vs.1.get_fullname()
+                            />
                             <BoutListInputItem versus=vs.clone() poolsheet_sigs=poolsheet_sigs/>
                         </li>
                     }
                 })
                 .collect::<Vec<_>>()}
         </ol>
+    }
+}
+
+#[component]
+pub fn BoutListItemLabel(versus_0: String, versus_1: String) -> impl IntoView {
+    view! {
+        <div class="bout-list-versus row justify-content-center">
+            <div class="col-4">{versus_0}</div>
+            <div class="col-4">vs.</div>
+            <div class="col-4">{versus_1}</div>
+        </div>
     }
 }
 
@@ -105,58 +119,62 @@ pub fn BoutListInputItem(
     let (get_check, set_check) = create_signal(LR::None);
 
     view! {
-        <div class="bout-list-inputs">
-            <input
-                type="checkbox"
-                class="bout-list-check"
-                on:input=move |ev| {
-                    if event_target_checked(&ev) {
-                        set_check.set(LR::Left);
-                        set_priority_a(Some(fencer_a3.clone()));
-                    } else {
-                        set_check.set(LR::None);
-                        set_priority_a(None);
+        <div class="bout-list-inputs row justify-content-center">
+            <div class="col-4">
+                <input
+                    type="checkbox"
+                    class="bout-list-check"
+                    on:input=move |ev| {
+                        if event_target_checked(&ev) {
+                            set_check.set(LR::Left);
+                            set_priority_a(Some(fencer_a3.clone()));
+                        } else {
+                            set_check.set(LR::None);
+                            set_priority_a(None);
+                        }
                     }
-                }
 
-                prop:checked=move || { get_check.get() == LR::Left }
-            />
-            <input
-                type="number"
-                class="bout-list-input"
-                on:input=move |ev| {
-                    let score = parse_score_from_event(&ev);
-                    set_scores_a(fencer_a1.clone(), score)
-                }
-
-                prop:value=move || { get_score_a(fencer_a2.clone()) }
-            />
-            " vs. "
-            <input
-                type="checkbox"
-                class="bout-list-check"
-                on:input=move |ev| {
-                    if event_target_checked(&ev) {
-                        set_check.set(LR::Right);
-                        set_priority_b(Some(fencer_b3.clone()));
-                    } else {
-                        set_check.set(LR::None);
-                        set_priority_b(None);
+                    prop:checked=move || { get_check.get() == LR::Left }
+                />
+                <input
+                    type="number"
+                    class="bout-list-input"
+                    on:input=move |ev| {
+                        let score = parse_score_from_event(&ev);
+                        set_scores_a(fencer_a1.clone(), score)
                     }
-                }
 
-                prop:checked=move || { get_check.get() == LR::Right }
-            />
-            <input
-                type="number"
-                class="bout-list-input"
-                on:input=move |ev| {
-                    let score = parse_score_from_event(&ev);
-                    set_scores_b(fencer_b1.clone(), score)
-                }
+                    prop:value=move || { get_score_a(fencer_a2.clone()) }
+                />
+            </div>
+            <div class="col-4">" - "</div>
+            <div class="col-4">
+                <input
+                    type="checkbox"
+                    class="bout-list-check"
+                    on:input=move |ev| {
+                        if event_target_checked(&ev) {
+                            set_check.set(LR::Right);
+                            set_priority_b(Some(fencer_b3.clone()));
+                        } else {
+                            set_check.set(LR::None);
+                            set_priority_b(None);
+                        }
+                    }
 
-                prop:value=move || { get_score_b(fencer_b2.clone()) }
-            />
+                    prop:checked=move || { get_check.get() == LR::Right }
+                />
+                <input
+                    type="number"
+                    class="bout-list-input"
+                    on:input=move |ev| {
+                        let score = parse_score_from_event(&ev);
+                        set_scores_b(fencer_b1.clone(), score)
+                    }
+
+                    prop:value=move || { get_score_b(fencer_b2.clone()) }
+                />
+            </div>
         </div>
     }
 }
