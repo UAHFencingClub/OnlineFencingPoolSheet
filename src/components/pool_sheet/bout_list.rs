@@ -46,10 +46,19 @@ pub fn BoutList(
 #[component]
 pub fn BoutListItemLabel(versus_0: String, versus_1: String) -> impl IntoView {
     view! {
-        <div class="bout-list-versus row justify-content-center">
-            <div class="col-4">{versus_0}</div>
-            <div class="col-4">vs.</div>
-            <div class="col-4">{versus_1}</div>
+        <div class="bout-list-versus row justify-content-center text-center">
+            <div class="col d-flex align-items-center justify-content-end flex-grow-1">
+                {versus_0}
+            </div>
+            <div
+                class="col-auto d-flex align-items-center justify-content-center flex-shrink-0"
+                style="width: 50px;"
+            >
+                "vs."
+            </div>
+            <div class="col d-flex align-items-center justify-content-start flex-grow-1">
+                {versus_1}
+            </div>
         </div>
     }
 }
@@ -119,8 +128,8 @@ pub fn BoutListInputItem(
     let (get_check, set_check) = create_signal(LR::None);
 
     view! {
-        <div class="bout-list-inputs row justify-content-center">
-            <div class="col-4">
+        <div class="bout-list-inputs row justify-content-center text-center mt-2">
+            <div class="col-auto d-flex align-items-center justify-content-center flex-shrink-0">
                 <input
                     type="checkbox"
                     class="bout-list-check"
@@ -147,8 +156,10 @@ pub fn BoutListInputItem(
                     prop:value=move || { get_score_a(fencer_a2.clone()) }
                 />
             </div>
-            <div class="col-4">" - "</div>
-            <div class="col-4">
+            <div class="col-auto d-flex align-items-center justify-content-center flex-shrink-0">
+                " - "
+            </div>
+            <div class="col-auto d-flex align-items-center justify-content-center flex-shrink-0">
                 <input
                     type="checkbox"
                     class="bout-list-check"
