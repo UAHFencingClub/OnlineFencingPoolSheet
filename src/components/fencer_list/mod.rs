@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use fencing_sport_lib::fencer::SimpleFencer;
 use indexmap::IndexSet;
 use leptos::*;
@@ -7,6 +9,17 @@ pub enum FencerListError {
     DuplicateFencer,
     NoFencers,
 }
+
+impl Display for FencerListError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::DuplicateFencer => write!(f, "fencers with the same name were input"),
+            Self::NoFencers => write!(f, "no fencers were input"),
+        }
+    }
+}
+
+impl std::error::Error for FencerListError {}
 
 #[component]
 pub fn FencerList(

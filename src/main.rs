@@ -50,7 +50,7 @@ fn main() {
                             }
                                 .into_view()
                         }
-                        Err(err) => view! { <p>{format!("{err:?}")}</p> }.into_view(),
+                        Err(err) => view! { <p>{format!("Error: {err}")}</p> }.into_view(),
                     }
                 }}
 
