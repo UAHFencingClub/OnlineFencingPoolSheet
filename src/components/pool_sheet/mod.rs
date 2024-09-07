@@ -56,6 +56,6 @@ where
             .into_view()
         }
 
-        Err(e) => view! { <p>{format!("Error {:?}", e)}</p> }.into_view(),
+        Err(err) => view! { <p>{format!("Error: {err}")}</p> }.into_view(),
     }
 }
