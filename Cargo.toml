@@ -10,7 +10,7 @@ authors = ["Erik Fong <quantumerikfong@gmail.com>"]
 leptos = { version = "0.6", features = ["csr", "nightly"] }
 leptos_meta = { version = "0.6", features = ["csr", "nightly"] }
 leptos_router = { version = "0.6", features = ["csr", "nightly"] }
-console_log = "=0.1.2"
+console_log = "1.0.0"
 log = "0.4"
 console_error_panic_hook = "0.1"
 web-sys = "0.3.69"
@@ -19,7 +19,7 @@ serde_json = "1.0.115"
 fencing-sport-lib = { git = "https://github.com/UAHFencingClub/fencing-sport-lib.git" }
 itertools = "0.13.0"
 indexmap = "2.3.0"
-leptos-use = "0.12.0"
+leptos-use = "0.13.0"
 
 # utils
 # strum = { version = "0.25", features = ["derive", "strum_macros"] }

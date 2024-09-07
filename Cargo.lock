@@ -35,17 +35,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "async-trait"
-version = "0.1.82"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a27b8a3a6e1a44fa4c8baf1f653e4172e81486d4941f2237e20dc2d0cf4ddff1"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "attribute-derive"
 version = "0.9.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -176,9 +165,9 @@ checksum = "396d5af7ca5b1762b777271537d3b3d1465701e46b1c049233f53752f724c68d"
 
 [[package]]
 name = "codee"
-version = "0.1.2"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "af40247be877a1e3353fb406aa27ab3ef4bd3ff18cef91e75e667bfa3fde701d"
+checksum = "5d3ad3122b0001c7f140cf4d605ef9a9e2c24d96ab0b4fb4347b76de2425f445"
 dependencies = [
  "thiserror",
 ]
@@ -215,9 +204,9 @@ dependencies = [
 
 [[package]]
 name = "console_log"
-version = "0.1.2"
+version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e7871d2947441b0fdd8e2bd1ce2a2f75304f896582c0d572162d48290683c48"
+checksum = "be8aed40e4edbf4d3b4431ab260b63fdc40f5780a4766824329ea0f1eefe3c0f"
 dependencies = [
  "log",
  "web-sys",
@@ -768,18 +757,16 @@ dependencies = [
 
 [[package]]
 name = "leptos-use"
-version = "0.12.0"
+version = "0.13.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "268b9df23d8c68ed0518c39d6f0d3b99fcbe30190a6dce4a7e5f342027ab0033"
+checksum = "293a4efcd9c2dfc003e6a9ae39763f0d07928a995d531354dbc80276a7e9d53c"
 dependencies = [
- "async-trait",
  "cfg-if",
  "codee",
  "cookie",
  "default-struct-builder",
  "futures-util",
  "gloo-timers",
- "gloo-utils",
  "js-sys",
  "lazy_static",
  "leptos",
