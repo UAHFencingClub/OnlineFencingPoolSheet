@@ -10,7 +10,7 @@ use fencing_sport_lib::{
 
 use html::Li;
 use leptos::*;
-use log::info;
+use log::{debug, info};
 
 use leptos::HtmlElement;
 
@@ -25,7 +25,7 @@ pub fn BoutList(
     ),
     complete_sig: ReadSignal<Vec<usize>>,
 ) -> impl IntoView {
-    info!("Rendering BoutList");
+    debug!("Rendering BoutList");
 
     let versus_len = versus.len();
 
@@ -101,7 +101,7 @@ pub fn BoutListInputItem(
         WriteSignal<PoolSheet<SimpleFencer>>,
     ),
 ) -> impl IntoView {
-    info!("Rendering BoutListInputItem");
+    debug!("Rendering BoutListInputItem");
     let (read_poolsheet, write_poolsheet) = poolsheet_sigs;
 
     let vs_get = versus.clone();

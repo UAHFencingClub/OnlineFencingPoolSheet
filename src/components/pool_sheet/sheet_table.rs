@@ -9,7 +9,7 @@ use fencing_sport_lib::{
 
 use leptos::*;
 use leptos_use::{use_element_size, UseElementSizeReturn};
-use log::info;
+use log::{debug, info};
 
 #[component]
 pub fn PoolSheetTable<F>(
@@ -22,7 +22,7 @@ pub fn PoolSheetTable<F>(
 where
     F: Fn() -> Vec<SimpleFencer> + Clone + 'static,
 {
-    info!("Rendering PoolSheetTable");
+    debug!("Rendering PoolSheetTable");
     view! {
         <table class="poolsheet-table">
             <PoolTableHeader fencers=fencers.clone()/>
@@ -52,7 +52,7 @@ pub fn TableScoreCell<'a>(
     ),
     column_count: usize,
 ) -> impl IntoView {
-    info!("Rendering TableScoreCell");
+    debug!("Rendering TableScoreCell");
 
     let main_fencer = main_fencer.clone();
     let secondary_fencer = secondary_fencer.clone();
@@ -78,7 +78,7 @@ pub fn TableScoreCell<'a>(
 
     let get_span_style = move || {
         let height_rounded = height() as usize;
-        info!("Test {height_rounded}");
+        debug!("Test {height_rounded}");
         format!("width: 100%; font-size: {height_rounded}px")
     };
 
@@ -90,7 +90,7 @@ pub fn TableScoreCell<'a>(
                 Some(x) => x.to_string(),
                 None => String::from(""),
             };
-            info!("Getting score for {main_fencer:?} - {secondary_fencer:?} = {tmp:?}");
+            debug!("Getting score for {main_fencer:?} - {secondary_fencer:?} = {tmp:?}");
             tmp
         };
         view! {
@@ -112,7 +112,7 @@ pub fn PoolTableHeader<F>(fencers: F) -> impl IntoView
 where
     F: Fn() -> Vec<SimpleFencer> + Clone,
 {
-    info!("Rendering PoolTableHeader");
+    debug!("Rendering PoolTableHeader");
 
     view! {
         <tr>
@@ -139,7 +139,7 @@ pub fn PoolTableRow<'a, F>(
 where
     F: Fn() -> Vec<SimpleFencer> + Clone + 'static,
 {
-    info!("Rendering PoolTableRow");
+    debug!("Rendering PoolTableRow");
     let len = fencers().len();
     view! {
         <tr>
