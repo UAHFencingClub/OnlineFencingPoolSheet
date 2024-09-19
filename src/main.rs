@@ -19,9 +19,10 @@ fn main() {
     console_error_panic_hook::set_once();
 
     let (competiors, set_competitors) = create_signal(Err(FencerListError::NoFencers));
-    let (results, set_results) = create_signal(
-        Result::<PoolResults<SimpleFencer>, PoolSheetError>::Err(PoolSheetError::PoolNotComplete),
-    );
+    let (results, set_results) =
+        create_signal(Result::<PoolResults<SimpleFencer>, PoolSheetError>::Err(
+            PoolSheetError::PoolNotComplete(Vec::<usize>::new()),
+        ));
 
     let doc = leptos::document();
     let fencer_main_div = doc

@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{rc::Rc, time::Duration};
 
 use ev::Event;
 use fencing_sport_lib::{
@@ -8,8 +8,11 @@ use fencing_sport_lib::{
     pools::{PoolSheet, PoolSheetVersus},
 };
 
+use html::Li;
 use leptos::*;
-use log::info;
+use log::{debug, info};
+
+use leptos::HtmlElement;
 
 const POOL_MAX_SCORE: u8 = 5;
 
@@ -20,8 +23,9 @@ pub fn BoutList(
         ReadSignal<PoolSheet<SimpleFencer>>,
         WriteSignal<PoolSheet<SimpleFencer>>,
     ),
+    complete_sig: ReadSignal<Vec<usize>>,
 ) -> impl IntoView {
-    info!("Rendering BoutList");
+    debug!("Rendering BoutList");
 
     let versus_len = versus.len();
 
@@ -31,8 +35,26 @@ pub fn BoutList(
                 .into_iter()
                 .enumerate()
                 .map(|(index, vs)| {
+                    let list_element_noderef = create_node_ref();
+                    create_effect(move |_| {
+                        let incomlete_indexes = complete_sig.get();
+                        if incomlete_indexes.iter().copied().find(|x| *x == index).is_none() {
+                            return;
+                        }
+                        let element = list_element_noderef.get();
+                        if let Some(element) = element {
+                            let element: HtmlElement<Li> = element;
+                            let element = element.class("warning-flash", true);
+                            set_timeout(
+                                move || {
+                                    let _ = element.class("warning-flash", false);
+                                },
+                                Duration::from_secs(1),
+                            );
+                        }
+                    });
                     view! {
-                        <li class="bout-list-item container">
+                        <li class="bout-list-item container" node_ref=list_element_noderef>
                             <BoutListItemLabel
                                 versus_0=vs.0.get_fullname()
                                 versus_1=vs.1.get_fullname()
@@ -79,7 +101,7 @@ pub fn BoutListInputItem(
         WriteSignal<PoolSheet<SimpleFencer>>,
     ),
 ) -> impl IntoView {
-    info!("Rendering BoutListInputItem");
+    debug!("Rendering BoutListInputItem");
     let (read_poolsheet, write_poolsheet) = poolsheet_sigs;
 
     let vs_get = versus.clone();
