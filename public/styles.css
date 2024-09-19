@@ -53,3 +53,14 @@
 .bout-list-input {
   width: 3em;
 }
+
+.bout-list-item {
+  -webkit-transition: background-color 3s ease-out;
+  -moz-transition: background-color 3s ease-out;
+  -o-transition: background-color 3s ease-out;
+  transition: background-color 3s ease-out;
+}
+
+.warning-flash {
+  background-color: rgb(255, 116, 116);
+}

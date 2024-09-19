@@ -35,17 +35,34 @@ where
                 })
             };
 
+            let (complete_sig, set_complete) = create_signal(Vec::new());
+
             view! {
                 <div id="poolsheet-table-div" class="col-sm-6">
                     <PoolSheetTable fencers=get_fencers poolsheet_sigs=poolsheet_signals/>
                 </div>
                 <div id="poolsheet-bouts-div" class="col-sm-6">
-                    <BoutList versus=get_versus() poolsheet_sigs=poolsheet_signals/>
+                    <BoutList
+                        versus=get_versus()
+                        poolsheet_sigs=poolsheet_signals
+                        complete_sig=complete_sig
+                    />
 
                     <button
                         id="get-poolsheets-results"
                         on:click=move |_| {
-                            poolsheet_signals.0.with(|sheet| { on_complete(sheet.finish()) });
+                            poolsheet_signals
+                                .0
+                                .with(|sheet| {
+                                    let finished_sheet = sheet.finish();
+                                    match finished_sheet {
+                                        Err(PoolSheetError::PoolNotComplete(ref err_bouts)) => {
+                                            set_complete.set(err_bouts.clone())
+                                        }
+                                        _ => {}
+                                    }
+                                    on_complete(finished_sheet);
+                                });
                         }
                     >
 
